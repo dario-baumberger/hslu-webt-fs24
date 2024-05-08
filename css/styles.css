@@ -1,0 +1,12 @@
+.form-row {
+  margin-bottom: 0.75rem;
+  padding-bottom: 1.25rem;
+  position: relative;
+}
+
+.form-error {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  bottom: 0;
+}

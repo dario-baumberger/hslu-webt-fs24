@@ -1,0 +1,144 @@
+<html>
+	<head>
+		<title>Home</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Demo" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" type="text/css" href="./css/styles.css" />
+		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body>
+		<div id="app">{{ message }}</div>
+
+		<header>
+			<nav>
+				<ul class="w3-bar w3-light-grey">
+					<li class="w3-bar-item">
+						<a href="/#information">Information</a>
+					</li>
+					<li class="w3-bar-item">
+						<a href="/#input">Input</a>
+					</li>
+					<li class="w3-bar-item">
+						<a href="/#output">Output</a>
+					</li>
+				</ul>
+			</nav>
+		</header>
+		<main class="w3-container">
+			<h1>Title</h1>
+			<section id="information">
+				<h2>Information</h2>
+				<p>
+					Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quisquam asperiores ad beatae sed ducimus nulla
+					architecto, perferendis tenetur, sunt, eligendi perspiciatis. Similique voluptates voluptatum dolor in
+					expedita suscipit cum illo.
+				</p>
+				<img src="/" alt="" />
+			</section>
+			<section id="input">
+				<h2>Input</h2>
+				<form id="form">
+					<div class="form-row">
+						<label for="search">Search</label>
+						<input
+							type="text"
+							name="search"
+							id="search"
+							class="validate w3-input w3-border w3-round"
+							minlength="3"
+							required
+						/>
+					</div>
+					<div class="form-row">
+						<label for="name">Name</label>
+						<input
+							type="text"
+							name="name"
+							id="name"
+							class="validate w3-input w3-border w3-round"
+							minlength="3"
+							maxlength="8"
+							required
+						/>
+					</div>
+
+					<div class="form-row">
+						<label for="route">Strasse</label>
+						<input
+							type="text"
+							name="route"
+							id="route"
+							class="validate w3-input w3-border w3-round"
+							minlength="3"
+							required
+						/>
+					</div>
+
+					<div class="form-row">
+						<label for="street_number">Nummer</label>
+						<input
+							type="text"
+							name="street_number"
+							id="street_number"
+							class="validate w3-input w3-border w3-round"
+							required
+						/>
+					</div>
+
+					<div class="form-row">
+						<label for="postal_code">postal_code</label>
+						<input
+							type="text"
+							name="postal_code"
+							id="postal_code"
+							class="validate w3-input w3-border w3-round"
+							minlength="3"
+							required
+						/>
+					</div>
+
+					<div class="form-row">
+						<label for="locality">locality</label>
+						<input
+							type="text"
+							name="locality"
+							id="locality"
+							class="validate w3-input w3-border w3-round"
+							minlength="3"
+							required
+						/>
+					</div>
+
+					<div class="form-row">
+						<label for="type">type</label>
+						<select name="type" id="type" class="w3-select w3-border">
+							<option value="">Bitte wählen</option>
+							<option value="Glutenfrei">Glutenfrei</option>
+							<option value="Vegan">Vegan</option>
+							<option value="Vegan und Glutenfrei">Vegan und Glutenfrei</option>
+						</select>
+					</div>
+
+					<input type="hidden" name="place_id" id="place_id" />
+
+					<button type="submit" id="submit" class="w3-button w3-black">Submit</button>
+				</form>
+			</section>
+			<section id="output">
+				<h2>Output</h2>
+				<div id="result"></div>
+			</section>
+			<section>
+				<h2>List</h2>
+				<ul id="list"></ul>
+			</section>
+		</main>
+		<footer>
+			<nav>Made by Dario Baumberger 2024</nav>
+		</footer>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBseo5xOkpp0jLe2zmXHuWd7TTnHYIH97k&libraries=places&language=de&types=restaurant|food&components=country:ch"></script>
+		<script src="./js/main.js"></script>
+	</body>
+</html>
