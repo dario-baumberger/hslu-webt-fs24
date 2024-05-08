@@ -9,17 +9,6 @@ const $toValidate = document.querySelectorAll(".validate");
 const inputIds = ["name", "route", "street_number", "locality", "postal_code", "type", "place_id"];
 const validateEvents = ["change", "keyup"];
 
-const { createApp, ref } = Vue;
-
-createApp({
-	setup() {
-		const message = ref("Hello vue!");
-		return {
-			message
-		};
-	}
-}).mount("#app");
-
 validateEvents.forEach((event) => {
 	$toValidate.forEach((input) => {
 		input.addEventListener(event, (e) => {
