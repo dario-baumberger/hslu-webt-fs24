@@ -28,11 +28,27 @@
 			<section id="information">
 				<h2>Information</h2>
 				<p>
-					Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quisquam asperiores ad beatae sed ducimus nulla
-					architecto, perferendis tenetur, sunt, eligendi perspiciatis. Similique voluptates voluptatum dolor in
-					expedita suscipit cum illo.
+					Fügen Sie Resturants, Takeaways etc. dem Glutenfreien- und Veganen-Verzeichnis hinzug.
 				</p>
-				<img src="/" alt="" />
+
+
+				<img src="https://www.w3schools.com/w3images/mac.jpg" alt="" usemap="#workmap">
+
+				<ol>
+					<li>
+						Suchen Sie nach Ihrem Lokal mittels Such-Feld.
+					</li>
+					<li>
+						Wählen Sie ihr Lokal aus den Vorschlägen aus. Die zu erfassenden Daten werden automatisch übernommmen
+					</li>
+					<li>
+						Ergab Ihre Suchen keinen Treffer, erfassen Sie die Angaben des Lokals manuell
+					</li>
+					<li>
+						Speichern Sie die eingeragenen Angaben.
+					</li>
+				</ol>
+
 			</section>
 			<section id="input">
 				<h2>Input</h2>
@@ -56,36 +72,15 @@
 							id="name"
 							class="validate w3-input w3-border w3-round"
 							minlength="3"
-							maxlength="8"
+
 							required
 						/>
 					</div>
 
-					<div class="form-row">
-						<label for="route">Strasse</label>
-						<input
-							type="text"
-							name="route"
-							id="route"
-							class="validate w3-input w3-border w3-round"
-							minlength="3"
-							required
-						/>
-					</div>
+
 
 					<div class="form-row">
-						<label for="street_number">Nummer</label>
-						<input
-							type="text"
-							name="street_number"
-							id="street_number"
-							class="validate w3-input w3-border w3-round"
-							required
-						/>
-					</div>
-
-					<div class="form-row">
-						<label for="postal_code">postal_code</label>
+						<label for="postal_code">PLZ</label>
 						<input
 							type="text"
 							name="postal_code"
@@ -97,7 +92,7 @@
 					</div>
 
 					<div class="form-row">
-						<label for="locality">locality</label>
+						<label for="locality">Ort</label>
 						<input
 							type="text"
 							name="locality"
@@ -109,7 +104,19 @@
 					</div>
 
 					<div class="form-row">
-						<label for="type">type</label>
+						<label for="website">Website</label>
+						<input
+								type="url"
+								name="website"
+								id="website"
+								class="validate w3-input w3-border w3-round"
+								minlength="3"
+								required
+						/>
+					</div>
+
+					<div class="form-row">
+						<label for="type">Typ</label>
 						<select name="type" id="type" class="w3-select w3-border">
 							<option value="">Bitte wählen</option>
 							<option value="Glutenfrei">Glutenfrei</option>
@@ -117,7 +124,7 @@
 							<option value="Vegan und Glutenfrei">Vegan und Glutenfrei</option>
 						</select>
 					</div>
-
+					<input type="hidden" name="url" id="url" />
 					<input type="hidden" name="place_id" id="place_id" />
 
 					<button type="submit" id="submit" class="w3-button w3-black">Submit</button>
@@ -129,7 +136,19 @@
 			</section>
 			<section>
 				<h2>List</h2>
-				<ul id="list"></ul>
+				<table>
+					<thead>
+					<tr>
+						<td>Name</td>
+						<td>PLZ Ort</td>
+						<td>Webseite</td>
+						<td>Google Profil</td>
+					</tr>
+					</thead>
+					<tbody id="list">
+
+					</tbody>
+				</table>
 			</section>
 		</main>
 		<footer>
