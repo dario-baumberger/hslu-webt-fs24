@@ -23,111 +23,110 @@
 				</ul>
 			</nav>
 		</header>
-		<main class="w3-container">
+		<main id="app" class="w3-container">
 			<h1>Title</h1>
 			<section id="information">
 				<h2>Information</h2>
-				<p>
-					Fügen Sie Resturants, Takeaways etc. dem Glutenfreien- und Veganen-Verzeichnis hinzug.
-				</p>
+				<p>Fügen Sie Resturants, Takeaways etc. dem Glutenfreien- und Veganen-Verzeichnis hinzug.</p>
 
-
-				<img src="https://www.w3schools.com/w3images/mac.jpg" alt="" usemap="#workmap">
+				<img src="https://www.w3schools.com/w3images/mac.jpg" alt="" usemap="#workmap" />
 
 				<ol>
-					<li>
-						Suchen Sie nach Ihrem Lokal mittels Such-Feld.
-					</li>
-					<li>
-						Wählen Sie ihr Lokal aus den Vorschlägen aus. Die zu erfassenden Daten werden automatisch übernommmen
-					</li>
-					<li>
-						Ergab Ihre Suchen keinen Treffer, erfassen Sie die Angaben des Lokals manuell
-					</li>
-					<li>
-						Speichern Sie die eingeragenen Angaben.
-					</li>
+					<li>Suchen Sie nach Ihrem Lokal mittels Such-Feld.</li>
+					<li>Wählen Sie ihr Lokal aus den Vorschlägen aus. Die zu erfassenden Daten werden automatisch übernommmen</li>
+					<li>Ergab Ihre Suchen keinen Treffer, erfassen Sie die Angaben des Lokals manuell</li>
+					<li>Speichern Sie die eingeragenen Angaben.</li>
 				</ol>
-
 			</section>
 			<section id="input">
 				<h2>Input</h2>
 				<form id="form">
-					<div class="form-row">
+					<div class="w3-row-padding">
 						<label for="search">Search</label>
-						<input
-							type="text"
-							name="search"
-							id="search"
-							class="validate w3-input w3-border w3-round"
-							minlength="3"
-							required
-						/>
+						<input type="text" name="search" id="search" class="w3-input w3-border w3-round" />
 					</div>
-					<div class="form-row">
+					<div class="w3-row-padding">
 						<label for="name">Name</label>
 						<input
 							type="text"
 							name="name"
 							id="name"
-							class="validate w3-input w3-border w3-round"
-							minlength="3"
-
-							required
+							class="w3-input w3-border w3-round"
+							:minlength="form.name.minlength"
+							:maxlength="form.name.maxlength"
+							:required="form.name.required"
+							v-model="form.name.value"
+							@change="validate($event.target.id)"
+							@keyup="validate($event.target.id)"
 						/>
+						<span>{{form.name.error}}</span>
 					</div>
 
-
-
-					<div class="form-row">
-						<label for="postal_code">PLZ</label>
-						<input
-							type="text"
-							name="postal_code"
-							id="postal_code"
-							class="validate w3-input w3-border w3-round"
-							minlength="3"
-							required
-						/>
-					</div>
-
-					<div class="form-row">
-						<label for="locality">Ort</label>
-						<input
-							type="text"
-							name="locality"
-							id="locality"
-							class="validate w3-input w3-border w3-round"
-							minlength="3"
-							required
-						/>
-					</div>
-
-					<div class="form-row">
-						<label for="website">Website</label>
-						<input
-								type="url"
-								name="website"
-								id="website"
-								class="validate w3-input w3-border w3-round"
+					<div class="w3-row-padding">
+						<div class="w3-half">
+							<label for="postal_code">PLZ</label>
+							<input
+								type="text"
+								name="postal_code"
+								id="postal_code"
+								class="w3-input w3-border w3-round"
 								minlength="3"
 								required
+								v-model="form.postal_code.value"
+								@change="validate($event.target.id)"
+								@keyup="validate($event.target.id)"
+							/>
+							<span>{{form.postal_code.error}}</span>
+						</div>
+						<div class="w3-half">
+							<label for="locality">Ort</label>
+							<input
+								type="text"
+								name="locality"
+								id="locality"
+								class="w3-input w3-border w3-round"
+								minlength="3"
+								required
+								v-model="form.locality.value"
+								@change="validate($event.target.id)"
+								@keyup="validate($event.target.id)"
+							/>
+							<span>{{form.locality.error}}</span>
+						</div>
+					</div>
+					<div class="w3-row-padding">
+						<label for="website">Website</label>
+						<input
+							type="url"
+							name="website"
+							id="website"
+							class="w3-input w3-border w3-round"
+							minlength="3"
+							required
+							v-model="form.website.value"
 						/>
+						<span>{{form.website.error}}</span>
 					</div>
 
-					<div class="form-row">
+					<div class="w3-row-padding">
 						<label for="type">Typ</label>
-						<select name="type" id="type" class="w3-select w3-border">
-							<option value="">Bitte wählen</option>
-							<option value="Glutenfrei">Glutenfrei</option>
-							<option value="Vegan">Vegan</option>
-							<option value="Vegan und Glutenfrei">Vegan und Glutenfrei</option>
+						<select
+							name="type"
+							id="type"
+							class="w3-select w3-border"
+							required
+							v-model="form.type.value"
+							@change="validate($event.target.id)"
+							@keyup="validate($event.target.id)"
+						>
+							<option v-for="option in typeOptions" :value="option.value">{{option.label}}</option>
 						</select>
+						<span>{{form.type.error}}</span>
 					</div>
 					<input type="hidden" name="url" id="url" />
 					<input type="hidden" name="place_id" id="place_id" />
 
-					<button type="submit" id="submit" class="w3-button w3-black">Submit</button>
+					<button type="submit" id="submit" class="w3-button w3-black" @click="submit">Submit</button>
 				</form>
 			</section>
 			<section id="output">
@@ -136,25 +135,46 @@
 			</section>
 			<section>
 				<h2>List</h2>
-				<table>
-					<thead>
-					<tr>
-						<td>Name</td>
-						<td>PLZ Ort</td>
-						<td>Webseite</td>
-						<td>Google Profil</td>
-					</tr>
-					</thead>
-					<tbody id="list">
 
-					</tbody>
+				<table class="w3-table w3-striped w3-bordered">
+					<tr>
+						<th>Name</th>
+						<th>PLZ Ort</th>
+						<th>Webseite</th>
+						<th>Google Profil</th>
+					</tr>
+					<tr v-for="item in entries">
+						<th>{{ item.name }}</th>
+						<td>{{ item.postal_code }} {{ item.locality }}</td>
+						<td>
+							<a :href="item.website" target="_blank">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+									<!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+									<path
+										d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z"
+									/>
+								</svg>
+							</a>
+						</td>
+						<td>
+							<a :href="item.url" target="_blank">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
+									<!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+									<path
+										d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
+									/>
+								</svg>
+							</a>
+						</td>
+					</tr>
 				</table>
 			</section>
 		</main>
 		<footer>
 			<nav>Made by Dario Baumberger 2024</nav>
 		</footer>
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBseo5xOkpp0jLe2zmXHuWd7TTnHYIH97k&libraries=places&language=de&types=restaurant|food&components=country:ch"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBseo5xOkpp0jLe2zmXHuWd7TTnHYIH97k&libraries=places&language=de"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.global.js"></script>
 		<script src="./js/main.js"></script>
 	</body>
 </html>
