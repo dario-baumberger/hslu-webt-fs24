@@ -137,36 +137,12 @@
 			$this->db->write_entry($json);
 		}
 
-		private function handlePutRequest($id) {
-			$body = file_get_contents("php://input");
-			$json = json_decode($body, true);
-			$updated = $this->db->update_entry($id, $json);
-			if (!$updated) {
-				http_response_code(404);
-				echo json_encode(['error' => 'Document not found']);
-				return;
-			}
-			echo json_encode(['success' => true]);
-		}
-
-		private function handleDeleteRequest($id) {
-			$deleted = $this->db->delet_entry($id);
-			if (!$deleted) {
-				http_response_code(404);
-				echo json_encode(['error' => 'Document not found']);
-				return;
-			}
-			echo json_encode(['success' => true]);
-		}
-
 		private function handleSearchRequest($params) {
 			$cookie = [];
 			foreach ($params as $key => $value) {
-
 				$cookie["$key"] = $value;
 			}
 			setcookie('search', json_encode($cookie), time() + (3600 * 60 * 30), "/");
-
 			$documents = $this->db->search_entries($params);
 			if (empty($documents)) {
 				echo json_encode([]);
@@ -179,28 +155,23 @@
 			if ($rules['required'] && empty($field)) {
 				return 'This field is required.';
 			}
-
 			if (isset($rules['minlength']) && isset($field) && strlen($field) < $rules['minlength']) {
 				return 'This field must be at least ' . $rules['minlength'] . ' characters long.';
 			}
-
 			if (isset($rules['maxlength']) && isset($field) && strlen($field) > $rules['maxlength']) {
 				return 'This field must be no more than ' . $rules['maxlength'] . ' characters long.';
 			}
-
 			return '';
 		}
 
 		private function validateData($data, $rules) {
 			$errors = [];
-
 			foreach ($rules as $field => $rule) {
 				$error = $this->validateField($data[$field], $rule);
 				if ($error) {
 					$errors[$field] = $error;
 				}
 			}
-
 			return $errors;
 		}
 	}
