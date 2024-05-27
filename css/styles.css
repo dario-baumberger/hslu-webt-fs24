@@ -1,23 +1,88 @@
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	border: 0;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
 .form-row {
-  margin-bottom: 0.75rem;
-  padding-bottom: 1.25rem;
-  position: relative;
+	position: relative;
+	display: flex;
+	width: 100%;
+	gap: 0.75rem;
+	flex-direction: column;
+}
+
+@media only screen and (min-width: 600px) {
+	.form-row {
+		flex-direction: row;
+	}
+}
+
+.form-field {
+	width: 100%;
+	padding-bottom: 1.25rem;
 }
 
 .form-error {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  bottom: 0;
+	position: absolute;
+	left: 0;
+	width: 100%;
+	bottom: 0;
 }
 
-td svg{
-  width: 10px;
-  height: 10px;
+td svg {
+	width: 10px;
+	height: 10px;
 }
 
-img{
-  max-width: 100%;
-  width: 100%;
-  height: auto;
+img {
+	max-width: 100%;
+	width: 100%;
+	height: auto;
+}
+
+.h-screen {
+	height: 100vh;
+}
+
+.cover {
+	height: 100%;
+	width: 100%;
+	object-fit: cover;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+html .margin-auto {
+	margin: auto;
+	float: none;
+}
+
+.canvas {
+	width: 100%;
+	height: 100vh;
+	position: relative;
+}
+
+html .center {
+	margin: auto;
+	float: none;
+}
+
+html main {
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
 }
