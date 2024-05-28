@@ -1,4 +1,11 @@
 {
-  "prettier.printWidth": 120,
-  "prettier.useTabs": true
+	"prettier.printWidth": 6000,
+	"prettier.useTabs": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"prettier.bracketSameLine": true,
+	"prettier.proseWrap": "never",
+	"prettier.trailingComma": "all",
+	"[php]": {
+		"editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
+	}
 }

@@ -1,22 +1,22 @@
 "use strict";
+
+const api = "/api/locations";
+
 const fetchOptions = (method) => ({
-	mode: "cors",
 	cache: "no-cache",
 	credentials: "same-origin",
 	headers: {
-		"Content-Type": "application/json"
+		"Content-Type": "application/json",
 	},
-	redirect: "follow",
-	referrerPolicy: "no-referrer",
-	method
+	method,
 });
 
 async function submitEntries(data, url) {
 	const response = await fetch(url, {
 		...fetchOptions("POST"),
-		body: JSON.stringify(data)
+		body: JSON.stringify(data),
 	});
-	return response;
+	return response.json();
 }
 
 async function loadEntries(type = "", place = "") {
@@ -24,29 +24,34 @@ async function loadEntries(type = "", place = "") {
 	if (type) queries.push(`type=${encodeURIComponent(type)}`);
 	if (place) queries.push(`locality=${encodeURIComponent(place)}`);
 	const queryString = queries.length ? `?${queries.join("&")}` : "";
-	const url = `/api/test${queryString}`;
-	const response = await fetch(url, fetchOptions("GET"));
+	const url = `${api}${queryString}`;
+	const response = await fetch(url, fetchOptions("GET")).catch((error) => []);
 	if (!response.ok) {
 		throw new Error("Network response was not ok");
 	}
 	return response.json();
 }
 
-function createField({ required = false, minlength = undefined, maxlength = undefined, value = "", error = "" } = {}) {
-	return { required, minlength, maxlength, value, error };
+function createField(value = "", required = false, minLength = undefined, maxLength = undefined) {
+	return {
+		value,
+		required,
+		minLength,
+		maxLength,
+	};
 }
 
 function validateField(field) {
 	const rules = [
 		{ condition: field.required && field.value === "", message: "Input is required" },
 		{
-			condition: field.minlength && field.value.length < field.minlength,
-			message: `Input is too short. Minimal length is ${field.minlength}`
+			condition: field.minLength && field.value.length < field.minLength,
+			message: `Input is too short. Minimal length is ${field.minLength}`,
 		},
 		{
-			condition: field.maxlength && field.value.length > field.maxlength,
-			message: `Input is too long. Maximal length is ${field.maxlength}`
-		}
+			condition: field.maxLength && field.value.length > field.maxLength,
+			message: `Input is too long. Maximal length is ${field.maxLength}`,
+		},
 	];
 	return rules.find((rule) => rule.condition)?.message || "";
 }
@@ -56,41 +61,38 @@ Vue.createApp({
 		return {
 			entries: [],
 			form: {
-				name: createField({ required: true, minlength: 1 }),
-				postal_code: createField({ required: true, minlength: 3, maxlength: 6 }),
-				locality: createField({ required: true, minlength: 2 }),
-				website: createField({ minlength: 3, maxlength: 100 }),
+				name: createField("", true, 4),
+				postal_code: createField("", true, 3, 6),
+				locality: createField("", true, 2),
+				website: createField("", false),
 				url: createField(),
 				place_id: createField(),
-				type: createField({ required: true })
+				type: createField("", true),
 			},
 			search: {
 				place: "",
-				type: ""
+				type: "",
 			},
 			result: "",
 			typeOptions: [
 				{ value: "", label: "Bitte wählen" },
 				{ value: "Glutenfrei", label: "Glutenfrei" },
 				{ value: "Vegan", label: "Vegan" },
-				{ value: "Vegan und Glutenfrei", label: "Vegan und Glutenfrei" }
-			]
+				{ value: "Vegan und Glutenfrei", label: "Vegan und Glutenfrei" },
+			],
 		};
 	},
 	async created() {
 		try {
 			this.entries = await loadEntries();
-			this.localities = this.entries
-				.map((entry) => ({ locality: entry.locality, postal_code: entry.postal_code }))
-				.filter((value, index, self) => self.map((item) => item.locality).indexOf(value.locality) === index);
+			this.localities = this.entries.map((entry) => ({ locality: entry.locality, postal_code: entry.postal_code })).filter((value, index, self) => self.map((item) => item.locality).indexOf(value.locality) === index);
 		} catch (error) {
 			console.log("There has been a problem with your fetch operation: ", error.message);
 		}
 	},
 
 	mounted() {
-		const input = document.getElementById("search");
-		const autocomplete = new google.maps.places.Autocomplete(input);
+		const autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete"));
 		autocomplete.setComponentRestrictions({ country: "ch" });
 		autocomplete.setTypes(["restaurant", "food"]);
 		autocomplete.addListener("place_changed", () => {
@@ -120,12 +122,10 @@ Vue.createApp({
 				this.dy = dy;
 				this.r = r;
 				this.lineWidth = lineWidth;
-				this.gradient;
 			}
 			draw = () => {
 				ctx.beginPath();
 				ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2, false);
-				ctx.fillStyle = this.gradient;
 				ctx.strokeStyle = "rgba(255,255,255,0.2)";
 				ctx.lineWidth = this.lineWidth;
 				ctx.stroke();
@@ -143,16 +143,7 @@ Vue.createApp({
 		const circles = [];
 		for (var i = 0; i < 10; i++) {
 			const radius = Math.floor(Math.random() * 120) + 50;
-			circles.push(
-				new Circle(
-					radius + Math.random() * width,
-					radius + Math.random() * height,
-					Math.floor(Math.random() * 2) + 1,
-					Math.floor(Math.random() * 2) + 1,
-					radius,
-					Math.floor(Math.random() * 5) + 3
-				)
-			);
+			circles.push(new Circle(radius + Math.random() * width, radius + Math.random() * height, Math.floor(Math.random() * 2) + 1, Math.floor(Math.random() * 2) + 1, radius, Math.floor(Math.random() * 5) + 3));
 		}
 
 		function animate() {
@@ -174,18 +165,21 @@ Vue.createApp({
 			field.error = error;
 			return !error;
 		},
-		async submitSearch(e) {
+		async submitSearch() {
 			try {
 				this.entries = await loadEntries(this.search.type, this.search.place);
+				window.scrollTo({ top: document.getElementById("locations").offsetTop, behavior: "smooth" });
 			} catch (error) {
-				console.log("There has been a problem with your fetch operation: ", error.message);
+				console.log(error.message);
+				throw new Error(error);
 			}
 		},
 
-		async resetSearch(e) {
+		async resetSearch() {
 			this.search.place = "";
 			this.search.type = "";
 			document.cookie = "search=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
 			try {
 				this.entries = await loadEntries(this.search.type, this.search.place);
 			} catch (error) {
@@ -197,14 +191,19 @@ Vue.createApp({
 			if (!Object.keys(this.form).every((key) => this.validate(key))) return;
 			try {
 				const formValues = Object.keys(this.form).reduce((obj, key) => {
-					obj[key] = this.form[key].value;
+					obj[key] = this.form[key].value ? this.form[key].value : "";
 					return obj;
 				}, {});
-				await submitEntries(formValues, "/api/test");
+
+				const response = await submitEntries(formValues, api);
 				this.resetForm();
-				this.result = `${result.name} wurde hinzugefügt`;
+
+				console.log(response);
+				this.result = `${response} wurde hinzugefügt`;
+
 				try {
 					this.entries = await loadEntries();
+					window.scrollTo({ top: document.getElementById("locations").offsetTop, behavior: "smooth" });
 				} catch (error) {
 					console.log("There has been a problem with your fetch operation: ", error.message);
 				}
@@ -214,9 +213,10 @@ Vue.createApp({
 		},
 
 		resetForm() {
+			document.getElementById("autocomplete").value = "";
 			Object.keys(this.form).forEach((key) => {
 				this.form[key].value = "";
 			});
-		}
-	}
+		},
+	},
 }).mount("#app");

@@ -1,228 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>Home</title>
-    <meta charset="utf-8"/>
-    <meta name="description" content="Demo"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" type="text/css" href="./css/styles.css"/>
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"/>
-</head>
-<body>
-<header class="w3-container m-w3-top w3-black">
-    <nav>
-        <ul class="w3-bar">
-            <li class="w3-bar-item w3-button w3-mobile w3-text-white">
-                <a href="/#locations">Locations</a>
-            </li>
-            <li class="w3-bar-item w3-button w3-mobile w3-text-white">
-                <a href="/#information">Information</a>
-            </li>
-            <li class="w3-bar-item w3-button w3-mobile w3-text-white">
-                <a href="/#new">Add New</a>
-            </li>
-        </ul>
-    </nav>
-</header>
-<main id="app">
-    <section class="w3-display-container h-screen">
-        <img class="cover" src="../img/unsplash-restaurant.jpg" alt="London" width="1500" height="700"/>
-        <canvas class="canvas" id="canvas"></canvas>
-        <div class="w3-col s10 m6 l4 w3-display-middle">
-            <form class="w3-container w3-white">
-                <h3>Find your location</h3>
-                <div class="w3-row">
-                    <div class="form-row">
-                        <div class="form-field">
-                            <label for="search_place">Place</label>
-                            <select name="search_place" id="search_place" class="w3-select w3-border"
-                                    v-model="search.place">
-                                <option value="">Bitte wählen</option>
-                                <option v-for="option in localities" :value="option.locality">
-                                    {{option.postal_code}} {{option.locality}}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-field">
-                            <label for="search_type">Typ</label>
-                            <select name="search_type" id="search_type" class="w3-select w3-border"
-                                    v-model="search.type">
-                                <option v-for="option in typeOptions" :value="option.value">{{option.label}}</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <button type="submit" @click.prevent="submitSearch" class="w3-button w3-dark-grey">Search
-                    </button
-                    >
-                    <button type="reset" @click.prevent="resetSearch" class="w3-button w3-dark-grey">Reset</button>
-                </div>
-            </form>
-        </div>
-    </section>
-    <section v-if="entries.length" id="locations" class="w3-padding-64">
-        <div class="w3-col l10 center">
-            <h2 class="w3-center">Locations</h2>
-            <table class="w3-table w3-striped w3-bordered">
-                <tr>
-                    <th>Name</th>
-                    <th>PLZ Ort</th>
-                    <th>Typ</th>
-                    <th>Webseite</th>
-                    <th>Google Profil</th>
-                </tr>
-                <tr v-for="item in entries">
-                    <th>{{ item.name }}</th>
-                    <td>{{ item.postal_code }} {{ item.locality }}</td>
-                    <td>{{item.type}}</td>
-                    <td>
-                        <a :href="item.website" target="_blank">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-                                <path
-                                        d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z"
-                                />
-                            </svg>
-                            <span class="sr-only"> {{ item.name }} Webseite </span>
-                        </a>
-                    </td>
-                    <td>
-                        <a :href="item.url" target="_blank">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
-                                <path
-                                        d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
-                                />
-                            </svg>
-                            <span class="sr-only"> {{ item.name }} Google Profil </span>
-                        </a>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </section>
-    <section v-if="!entries.length" class="w3-container w3-panel w3-blue w3-padding-64">
-        <p>No Entries</p>
-    </section>
-    <section id="information" class="w3-container w3-row w3-padding-64">
-        <div class="w3-col l6 m12">
-            <h2>Information</h2>
-            <p>Fügen Sie Resturants, Takeaways etc. dem Glutenfreien- und Veganen-Verzeichnis hinzu.</p>
-            <ol>
-                <li>Suchen Sie nach Ihrem Lokal mittels Such-Feld.</li>
-                <li>
-                    Wählen Sie ihr Lokal aus den Vorschlägen aus. Die zu erfassenden Daten werden automatisch
-                    übernommmen
-                </li>
-                <li>Ergab Ihre Suchen keinen Treffer, erfassen Sie die Angaben des Lokals manuell</li>
-                <li>Speichern Sie die eingetragenen Angaben.</li>
-            </ol>
-        </div>
-        <div class="w3-col l6 m12">
-            <img src="https://www.w3schools.com/w3images/mac.jpg" alt="" usemap="#workmap"/>
-        </div>
-    </section>
-    <section id="new" class="w3-container w3-col l8 margin-auto w3-padding-64">
-        <h2 class="w3-center">Add new location</h2>
-        <form id="form" class="form">
-            <div class="form-row">
-                <div class="form-field">
-                    <label for="search">Search</label>
-                    <input type="text" name="search" id="search" class="w3-input w3-border w3-round"/>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-field">
-                    <label for="name">Name</label>
-                    <input
-                            type="text"
-                            name="name"
-                            id="name"
-                            class="w3-input w3-border w3-round"
-                            :minlength="form.name.minlength"
-                            :maxlength="form.name.maxlength"
-                            :required="form.name.required"
-                            v-model="form.name.value"
-                            @change="validate($event.target.id)"
-                            @keyup="validate($event.target.id)"
-                    />
-                    <span>{{form.name.error}}</span>
-                </div>
-            </div>
+	<head>
+		<title>Home</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Demo" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" type="text/css" href="./css/styles.css" />
+		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+	</head>
+	<body>
+		<header class="w3-container w3-top w3-black">
+			<nav class="w3-bar">
+				<ul>
+					<li class="w3-bar-item w3-button w3-mobile">
+						<a href="/#locations">Locations</a>
+					</li>
+					<li class="w3-bar-item w3-button w3-mobile">
+						<a href="/#information">Information</a>
+					</li>
+					<li class="w3-bar-item w3-button w3-mobile">
+						<a href="/#new">Hinzufügen</a>
+					</li>
+				</ul>
+			</nav>
+		</header>
+		<main id="app">
+			<section class="w3-display-container h-screen">
+				<img class="cover" src="../img/unsplash-restaurant.jpg" alt="London" width="1500" height="700" loading="lazy" />
+				<canvas class="canvas" id="canvas"></canvas>
+				<div class="w3-container w3-col s10 m8 l6 w3-display-middle w3-white w3-padding-24">
+					<h2 class="w3-center">Lokal finden</h2>
+					<form class="form search">
+						<div class="form-row">
+							<div class="form-field">
+								<label for="search_place">Ort</label>
+								<select name="search_place" id="search_place" class="w3-select w3-border" v-model="search.place">
+									<option value="234">Bitte wählen</option>
+									<option v-for="option in localities" :value="option.locality">{{option.postal_code}} {{option.locality}}</option>
+								</select>
+							</div>
+							<div class="form-field">
+								<label for="search_type">Typ</label>
+								<select name="search_type" id="search_type" class="w3-select w3-border" v-model="search.type">
+									<option v-for="option in typeOptions" :value="option.value">{{option.label}}</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-row">
+							<button type="submit" @click.prevent="submitSearch" class="w3-button w3-black">Suchen</button>
+							<button type="reset" @click.prevent="resetSearch" class="w3-button w3-dark-grey">Zurücksetzen</button>
+						</div>
+					</form>
+				</div>
+			</section>
+			<section id="locations" class="w3-padding-64">
+				<div class="w3-col l10 center">
+					<h2 class="w3-center">Locations</h2>
+					<div v-if="!entries.length" class="w3-container w3-panel w3-light-grey w3-padding-64 w3-center">
+						<p>Zu Ihrer Suche wurden keine Lokale gefunden.</p>
+						<a href="#new" class="w3-button w3-black">Lokal hinzufügen</a>
+					</div>
+					<table v-if="entries.length" class="w3-table w3-striped w3-bordered">
+						<tr>
+							<th>Name</th>
+							<th>PLZ Ort</th>
+							<th>Typ</th>
+							<th class="td--small"><span class="sr-only">Webseite</span></th>
+							<th class="td--small"><span class="sr-only">Google Profil</span></th>
+						</tr>
+						<tr v-for="item in entries">
+							<th>{{ item.name }}</th>
+							<td>{{ item.postal_code }} {{ item.locality }}</td>
+							<td>{{item.type}}</td>
+							<td class="td--small">
+								<a :href="item.website" target="_blank">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+										<path d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z" />
+									</svg>
+									<span class="sr-only"> {{ item.name }} Webseite </span>
+								</a>
+							</td>
+							<td class="td--small">
+								<a :href="item.url" target="_blank">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
+										<path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
+									</svg>
+									<span class="sr-only"> {{ item.name }} Google Profil </span>
+								</a>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</section>
 
-            <div class="form-row">
-                <div class="form-field">
-                    <label for="postal_code">PLZ</label>
-                    <input
-                            type="text"
-                            name="postal_code"
-                            id="postal_code"
-                            class="w3-input w3-border w3-round"
-                            minlength="3"
-                            required
-                            v-model="form.postal_code.value"
-                            @change="validate($event.target.id)"
-                            @blur="validate($event.target.id)"
-                    />
-                    <span>{{form.postal_code.error}}</span>
-                </div>
-                <div class="form-field">
-                    <label for="locality">Ort</label>
-                    <input
-                            type="text"
-                            name="locality"
-                            id="locality"
-                            class="w3-input w3-border w3-round"
-                            minlength="3"
-                            required
-                            v-model="form.locality.value"
-                            @change="validate($event.target.id)"
-                            @keyup="validate($event.target.id)"
-                    />
-                    <span>{{form.locality.error}}</span>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-field">
-                    <label for="website">Website</label>
-                    <input
-                            type="url"
-                            name="website"
-                            id="website"
-                            class="w3-input w3-border w3-round"
-                            minlength="3"
-                            required
-                            v-model="form.website.value"
-                    />
-                    <span>{{form.website.error}}</span>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-field">
-                    <label for="type">Typ</label>
-                    <select
-                            name="type"
-                            id="type"
-                            class="w3-select w3-border"
-                            required
-                            v-model="form.type.value"
-                            @change="validate($event.target.id)"
-                            @keyup="validate($event.target.id)"
-                    >
-                        <option v-for="option in typeOptions" :value="option.value">{{option.label}}</option>
-                    </select>
-                    <span>{{form.type.error}}</span>
-                </div>
-            </div>
-            <input type="hidden" name="url" id="url"/>
-            <input type="hidden" name="place_id" id="place_id"/>
-            <button type="submit" id="submit" class="w3-button w3-black" @click.prevent="submit">Submit</button>
-        </form>
-    </section>
-</main>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBseo5xOkpp0jLe2zmXHuWd7TTnHYIH97k&libraries=places&language=de"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.global.js"></script>
-<script src="./js/main.js"></script>
-</body>
+			<section id="information" class="w3-container w3-col l8 margin-auto w3-padding-64">
+				<h2 class="w3-center">Information</h2>
+				<hr />
+				<div class="w3-row w3-margin-top w3-margin-bottom">
+					<div class="w3-col l6 m12">
+						<h3>Suchen</h3>
+						<p>Fiden Sie glutenfreie und vegane Lokale in Ihrer Nähe</p>
+						<ol>
+							<li>Filtern die Lokale anhand eines Ortes oder ihres Typs.</li>
+							<li>Rufen Sie direkt die Webseite oder das Google Profil des Lokals auf</li>
+						</ol>
+					</div>
+					<div class="w3-col l6 m12">
+						<img src="../img/instructions-search.png" alt="Instructions" usemap="#workmap" loading="lazy" />
+					</div>
+				</div>
+				<hr />
+				<div class="w3-row w3-margin-top w3-margin-bottom">
+					<div class="w3-col l6 m12">
+						<h3>Hinzufügen</h3>
+						<p>Fügen Sie Restaurants, Takeaways etc. dem Glutenfreien- und Veganen-Verzeichnis hinzu.</p>
+						<ol>
+							<li>Suchen Sie nach Ihrem Lokal mittels Such-Feld.</li>
+							<li>Wählen Sie ihr Lokal aus den Vorschlägen aus. Die zu erfassenden Daten werden automatisch übernommen</li>
+							<li>Ergab Ihre Suche keinen Treffer, erfassen Sie die Angaben des Lokals manuell</li>
+							<li>Speichern Sie die eingetragenen Angaben.</li>
+						</ol>
+					</div>
+					<div class="w3-col l6 m12">
+						<img src="../img/instructions-add.png" alt="Instructions" usemap="#workmap" loading="lazy" />
+					</div>
+				</div>
+				<hr />
+			</section>
+			<section id="new" class="w3-container w3-col l8 margin-auto w3-padding-64">
+				<h2 class="w3-center">Neues Lokal hinzufügen</h2>
+				<form id="form" class="form">
+					<div class="form-row">
+						<div class="form-field">
+							<label for="autocomplete">Lokal finden</label>
+							<input type="text" name="autocomplete" id="autocomplete" class="w3-input w3-border w3-round" />
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-field">
+							<label for="name">Name</label>
+							<input type="text" name="name" id="name" class="w3-input w3-border w3-round" v-bind="form.name" v-model="form.name.value" @change="validate($event.target.id)" @keyup="validate($event.target.id)" />
+							<span>{{form.name.error}}</span>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-field">
+							<label for="postal_code">PLZ</label>
+							<input type="text" name="postal_code" id="postal_code" class="w3-input w3-border w3-round" v-bind="form.postal_code" v-model="form.postal_code.value" @change="validate($event.target.id)" @blur="validate($event.target.id)" />
+							<span>{{form.postal_code.error}}</span>
+						</div>
+						<div class="form-field">
+							<label for="locality">Ort</label>
+							<input type="text" name="locality" id="locality" class="w3-input w3-border w3-round" v-bind="form.locality" v-model="form.locality.value" @change="validate($event.target.id)" @keyup="validate($event.target.id)" />
+							<span>{{form.locality.error}}</span>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-field">
+							<label for="website">Webseite</label>
+							<input type="url" name="website" id="website" class="w3-input w3-border w3-round" v-bind="form.website" v-model="form.website.value" />
+							<span>{{form.website.error}}</span>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-field">
+							<label for="type">Typ</label>
+							<select name="type" id="type" class="w3-select w3-border" v-bind="form.type" v-model="form.type.value" @change="validate($event.target.id)" @keyup="validate($event.target.id)">
+								<option v-for="option in typeOptions" :value="option.value">{{option.label}}</option>
+							</select>
+							<span>{{form.type.error}}</span>
+						</div>
+					</div>
+					<div class="form-row">
+						<button type="submit" id="submit" class="w3-button w3-black" @click.prevent="submit">Speichern</button>
+					</div>
+					<input type="hidden" name="url" id="url" />
+					<input type="hidden" name="place_id" id="place_id" />
+				</form>
+			</section>
+		</main>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBseo5xOkpp0jLe2zmXHuWd7TTnHYIH97k&libraries=places&language=de"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.global.js"></script>
+		<script src="./js/main.js"></script>
+	</body>
 </html>

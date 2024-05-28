@@ -23,6 +23,10 @@ form {
 	flex-direction: column;
 }
 
+.center {
+	justify-content: center;
+}
+
 @media only screen and (min-width: 600px) {
 	.form-row {
 		flex-direction: row;
@@ -85,4 +89,25 @@ html main {
 	display: flex;
 	flex-direction: column;
 	gap: 30px;
+}
+
+ul {
+	margin: 0;
+	padding: 0;
+}
+
+table {
+	width: 100%;
+	max-width: 100%;
+	table-layout: fixed;
+}
+
+.td--small {
+	width: 50px;
+}
+td,
+th {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
