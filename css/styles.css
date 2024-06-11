@@ -1,3 +1,10 @@
+/**
+ * Reset and helper styles
+ */
+* {
+	box-sizing: border-box;
+}
+
 .sr-only {
 	position: absolute;
 	width: 1px;
@@ -9,6 +16,50 @@
 	border: 0;
 }
 
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+.h-screen {
+	height: 100vh;
+}
+
+.center {
+	justify-content: center;
+}
+.cover {
+	height: 100%;
+	width: 100%;
+	object-fit: cover;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+.canvas {
+	position: relative;
+}
+
+html main {
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+}
+
+html .margin-auto {
+	margin: auto;
+	float: none;
+}
+
+ul {
+	margin: 0;
+	padding: 0;
+}
+
+/**
+ * Form styles
+ */
 form {
 	display: flex;
 	flex-direction: column;
@@ -23,16 +74,6 @@ form {
 	flex-direction: column;
 }
 
-.center {
-	justify-content: center;
-}
-
-@media only screen and (min-width: 600px) {
-	.form-row {
-		flex-direction: row;
-	}
-}
-
 .form-field {
 	width: 100%;
 	padding-bottom: 1.25rem;
@@ -45,69 +86,168 @@ form {
 	bottom: 0;
 }
 
-td svg {
-	width: 10px;
-	height: 10px;
+@media only screen and (min-width: 600px) {
+	.form-row {
+		flex-direction: row;
+	}
 }
 
-img {
-	max-width: 100%;
-	width: 100%;
-	height: auto;
-}
-
-.h-screen {
-	height: 100vh;
-}
-
-.cover {
-	height: 100%;
-	width: 100%;
-	object-fit: cover;
-	position: absolute;
-	left: 0;
-	top: 0;
-}
-
-html .margin-auto {
-	margin: auto;
-	float: none;
-}
-
-.canvas {
-	width: 100%;
-	height: 100vh;
-	position: relative;
-}
-
-html .center {
-	margin: auto;
-	float: none;
-}
-
-html main {
-	display: flex;
-	flex-direction: column;
-	gap: 30px;
-}
-
-ul {
-	margin: 0;
-	padding: 0;
-}
-
+/**
+ * Table styles
+ */
 table {
 	width: 100%;
 	max-width: 100%;
 	table-layout: fixed;
 }
 
-.td--small {
-	width: 50px;
+tr {
+	display: table-row;
 }
-td,
-th {
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	overflow: hidden;
+
+th::before,
+td::before {
+	display: none;
+}
+
+.td--small {
+	width: 60px;
+}
+
+td svg {
+	width: 10px;
+	height: 10px;
+}
+
+@media only screen and (max-width: 600px) {
+	thead {
+		display: none;
+	}
+
+	tr {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.w3-table td,
+	#locations .w3-table th {
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		text-align: right;
+		padding-left: 100px;
+		position: relative;
+		text-align: right;
+		height: 50px;
+		vertical-align: baseline;
+	}
+
+	td::before,
+	th::before {
+		content: attr(data-title);
+		width: 33%;
+		min-width: 100px;
+		display: inline-flex;
+		position: absolute;
+		left: 0;
+		text-align: left;
+		height: 100%;
+		align-items: center;
+	}
+
+	.td--small {
+		width: 100%;
+	}
+}
+
+/**
+ * Header and Navigation styles
+ */
+
+.header {
+	display: flex;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1;
+	min-height: 50px;
+	background-color: black;
+	width: 100%;
+}
+
+.navigation {
+	display: flex;
+	width: 100%;
+	flex-direction: row;
+}
+
+.navigation-toggle,
+.navigation-input {
+	position: absolute;
+	right: 0;
+	top: 0;
+	height: 50px;
+	width: 50px;
+	display: block;
+}
+
+.navigation-toggle {
+	padding: 10px;
+	cursor: pointer;
+	color: white;
+}
+
+.navigation-input {
+	appearance: none;
+	z-index: -1;
+}
+
+.navigation-list {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	justify-content: center;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.navigation-input + .navigation {
+	display: none;
+}
+
+.navigation-input:checked + .navigation {
+	display: block;
+}
+
+.navigation-link {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	height: 50px;
+	color: white;
+	text-decoration: none;
+	padding: 0 20px;
+}
+
+.navigation-link:hover {
+	background-color: #ccc;
+	color: black;
+}
+
+@media only screen and (min-width: 600px) {
+	.navigation-toggle,
+	.navigation-input {
+		display: none;
+	}
+
+	.navigation-list {
+		flex-direction: row;
+	}
+
+	.navigation-input + .navigation {
+		display: flex;
+		flex-direction: row;
+	}
 }

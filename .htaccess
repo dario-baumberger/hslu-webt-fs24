@@ -1,3 +1,5 @@
 RewriteEngine on
 RewriteRule api/locations$ backend.php [L]
 RewriteRule api/locations/([A-Za-z0-9]+)$ backend.php?id=$1 [L]
+RewriteRule api/search$ backend.php [L]
+RewriteRule api/search/([A-Za-z0-9]+)$ backend.php?id=$1 [L]

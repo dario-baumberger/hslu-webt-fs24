@@ -1,94 +1,70 @@
-"use strict";
+("use strict");
 
-const api = "/api/locations";
-
+// general fetch options
 const fetchOptions = (method) => ({
 	cache: "no-cache",
-	credentials: "same-origin",
 	headers: {
 		"Content-Type": "application/json",
 	},
 	method,
 });
+const types = ["Glutenfrei", "Vegan", "Vegan und Glutenfrei"];
 
-async function submitEntries(data, url) {
-	const response = await fetch(url, {
-		...fetchOptions("POST"),
-		body: JSON.stringify(data),
-	});
-	return response.json();
+// create input field object with needed properties
+function createField(value = "", required = false, minLength = undefined, maxLength = undefined, pattern = undefined) {
+	return { value, required, minLength, maxLength, pattern };
 }
 
-async function loadEntries(type = "", place = "") {
-	let queries = [];
-	if (type) queries.push(`type=${encodeURIComponent(type)}`);
-	if (place) queries.push(`locality=${encodeURIComponent(place)}`);
-	const queryString = queries.length ? `?${queries.join("&")}` : "";
-	const url = `${api}${queryString}`;
-	const response = await fetch(url, fetchOptions("GET")).catch((error) => []);
-	if (!response.ok) {
-		throw new Error("Network response was not ok");
-	}
-	return response.json();
-}
-
-function createField(value = "", required = false, minLength = undefined, maxLength = undefined) {
-	return {
-		value,
-		required,
-		minLength,
-		maxLength,
-	};
-}
-
+// validate input field by its properties
 function validateField(field) {
 	const rules = [
-		{ condition: field.required && field.value === "", message: "Input is required" },
+		/* { condition: field.required && field.value === "", message: "Pflichtfeld" },
+		// minlength should only be checked if field has a value. Otherwise it would always be invalid.
+		//There exists field with minlength which are not required.
 		{
-			condition: field.minLength && field.value.length < field.minLength,
-			message: `Input is too short. Minimal length is ${field.minLength}`,
+			condition: !field.required && field.value && field.value.length < field.minLength,
+			message: `Eingabe zur kurz. Minimale Länge ${field.minLength} Zeichen`,
 		},
 		{
 			condition: field.maxLength && field.value.length > field.maxLength,
-			message: `Input is too long. Maximal length is ${field.maxLength}`,
+			message: `Input zu lange. Maximale Länge ${field.maxLength} Zeichen`,
 		},
+		{
+			condition: field.pattern && field.value && !field.pattern.test(field.value),
+			message: `Ungültiges Format`,
+		}, */
 	];
+
 	return rules.find((rule) => rule.condition)?.message || "";
 }
 
 Vue.createApp({
 	data() {
 		return {
-			entries: [],
+			entries: { data: [] },
+			localities: [],
 			form: {
-				name: createField("", true, 4),
-				postal_code: createField("", true, 3, 6),
+				name: createField("", true, 1),
+				postal_code: createField("", true, 4, 4),
 				locality: createField("", true, 2),
-				website: createField("", false),
-				url: createField(),
+				website: createField("", false, undefined, undefined, /^https?:\/\/.+$/),
+				url: createField("", false, undefined, undefined, /^https?:\/\/.+$/),
 				place_id: createField(),
 				type: createField("", true),
 			},
 			search: {
-				place: "",
+				postal_code: "",
 				type: "",
 			},
-			result: "",
-			typeOptions: [
-				{ value: "", label: "Bitte wählen" },
-				{ value: "Glutenfrei", label: "Glutenfrei" },
-				{ value: "Vegan", label: "Vegan" },
-				{ value: "Vegan und Glutenfrei", label: "Vegan und Glutenfrei" },
-			],
+			result: {},
+			typeOptions: types.map((type) => ({ value: type, label: type })),
 		};
 	},
 	async created() {
-		try {
-			this.entries = await loadEntries();
-			this.localities = this.entries.map((entry) => ({ locality: entry.locality, postal_code: entry.postal_code })).filter((value, index, self) => self.map((item) => item.locality).indexOf(value.locality) === index);
-		} catch (error) {
-			console.log("There has been a problem with your fetch operation: ", error.message);
-		}
+		this.submitSearch();
+		let response = await this.loadEntries("api/locations");
+		this.localities = response.data.map((entry) => ({ locality: entry.locality, postal_code: entry.postal_code }));
+		this.readSearchCookieUpdateSearchInputs();
 	},
 
 	mounted() {
@@ -100,9 +76,7 @@ Vue.createApp({
 			const addressComponents = autocomplete.getPlace().address_components;
 			const placeFields = ["name", "place_id", "url", "website"];
 			const addressFields = ["locality", "postal_code"];
-			placeFields.forEach((field) => {
-				this.form[field].value = place[field];
-			});
+			placeFields.forEach((field) => (this.form[field].value = place[field]));
 			addressFields.forEach((type) => {
 				this.form[type].value = addressComponents.find((component) => component.types.includes(type)).long_name;
 			});
@@ -152,66 +126,106 @@ Vue.createApp({
 			ctx.rect(0, 0, width, height);
 			ctx.fillStyle = "rgba(0,0,0,0.5)";
 			ctx.fill();
-			ctx.filter = "blur(5px)";
+			ctx.filter = "blur(2px)";
 			circles.forEach((circle) => circle.update());
+
+			const text = "Lokalität suchen";
+			const centerX = canvas.width / 2;
+			const centerY = canvas.height / 2;
+			const radius = 360;
+			const startAngle = -Math.PI / 4; // Start at -45 degrees
+			const endAngle = Math.PI / 4;
+
+			ctx.font = "bold 30px Arial";
+			ctx.textBaseline = "middle";
+			ctx.fillStyle = "white"; // Set fill color to white
+
+			for (let i = 0; i < text.length; i++) {
+				const char = text[i];
+				const angle = (endAngle - startAngle) * (i / (text.length - 1)) + startAngle;
+				ctx.save();
+				ctx.translate(centerX, centerY);
+				ctx.rotate(angle);
+				ctx.fillText(char, 0, -radius);
+				ctx.restore();
+			}
 		}
 
 		animate();
 	},
 	methods: {
+		readSearchCookieUpdateSearchInputs() {
+			const searchCookie = document.cookie.split("; ").find((row) => row.startsWith("search="));
+			const searchCookieValue = searchCookie ? JSON.parse(decodeURIComponent(searchCookie.split("=")[1])) : {};
+			this.search.postal_code = searchCookieValue.postal_code ?? "";
+			this.search.type = searchCookieValue.type ?? "";
+		},
 		validate(key) {
 			const field = this.form[key];
 			const error = validateField(field);
 			field.error = error;
 			return !error;
 		},
-		async submitSearch() {
+		async submitEntries(data, url) {
+			const response = await fetch(url, {
+				...fetchOptions("POST"),
+				body: JSON.stringify(data),
+			});
+			return response;
+		},
+		async loadEntries(api = "/api/locations", type = "", place = "") {
+			let queries = [];
+			if (type) queries.push(`types=${encodeURIComponent(type)}`);
+			if (place) queries.push(`postal_codes=${encodeURIComponent(place)}`);
+			const queryString = queries.length ? `?${queries.join("&")}` : "";
+			const url = `${api}${queryString}`;
+
 			try {
-				this.entries = await loadEntries(this.search.type, this.search.place);
-				window.scrollTo({ top: document.getElementById("locations").offsetTop, behavior: "smooth" });
+				const response = await fetch(url, fetchOptions("GET"));
+				if (!response.ok) {
+					const errorResponse = await response.json();
+					this.result = errorResponse; // Set the result to the error response
+					throw new Error(errorResponse);
+				}
+
+				return data;
 			} catch (error) {
-				console.log(error.message);
-				throw new Error(error);
+				return { data: [] };
 			}
 		},
 
+		async submitSearch() {
+			this.entries = await this.loadEntries("/api/search", this.search.type, this.search.postal_code);
+			window.scrollTo({ top: document.getElementById("locations").offsetTop, behavior: "smooth" });
+		},
 		async resetSearch() {
-			this.search.place = "";
+			this.search.postal_code = "";
 			this.search.type = "";
 			document.cookie = "search=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
-			try {
-				this.entries = await loadEntries(this.search.type, this.search.place);
-			} catch (error) {
-				console.log("There has been a problem with your fetch operation: ", error.message);
-			}
+			this.entries = await this.loadEntries("/api/search", this.search.type, this.search.postal_code);
 		},
-
-		async submit() {
-			if (!Object.keys(this.form).every((key) => this.validate(key))) return;
+		async submitNew() {
+			Object.keys(this.form).forEach((key) => this.validate(key));
 			try {
 				const formValues = Object.keys(this.form).reduce((obj, key) => {
-					obj[key] = this.form[key].value ? this.form[key].value : "";
+					obj[key] = this.form[key].value || "";
 					return obj;
 				}, {});
 
-				const response = await submitEntries(formValues, api);
-				this.resetForm();
+				const response = await this.submitEntries(formValues, "/api/locations");
+				const jsonResponse = await response.json();
+				this.result = jsonResponse;
 
-				console.log(response);
-				this.result = `${response} wurde hinzugefügt`;
-
-				try {
-					this.entries = await loadEntries();
-					window.scrollTo({ top: document.getElementById("locations").offsetTop, behavior: "smooth" });
-				} catch (error) {
-					console.log("There has been a problem with your fetch operation: ", error.message);
+				if (!response.ok) {
+					//throw new Error(JSON.stringify(jsonResponse));
 				}
+
+				this.resetForm();
+				this.entries = await this.loadEntries();
 			} catch (error) {
 				this.result = error;
 			}
 		},
-
 		resetForm() {
 			document.getElementById("autocomplete").value = "";
 			Object.keys(this.form).forEach((key) => {
