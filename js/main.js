@@ -18,7 +18,7 @@ function createField(value = "", required = false, minLength = undefined, maxLen
 // validate input field by its properties
 function validateField(field) {
 	const rules = [
-		/* { condition: field.required && field.value === "", message: "Pflichtfeld" },
+		{ condition: field.required && field.value === "", message: "Pflichtfeld" },
 		// minlength should only be checked if field has a value. Otherwise it would always be invalid.
 		//There exists field with minlength which are not required.
 		{
@@ -32,7 +32,7 @@ function validateField(field) {
 		{
 			condition: field.pattern && field.value && !field.pattern.test(field.value),
 			message: `Ungültiges Format`,
-		}, */
+		},
 	];
 
 	return rules.find((rule) => rule.condition)?.message || "";
@@ -175,8 +175,8 @@ Vue.createApp({
 		},
 		async loadEntries(api = "/api/locations", type = "", place = "") {
 			let queries = [];
-			if (type) queries.push(`types=${encodeURIComponent(type)}`);
-			if (place) queries.push(`postal_codes=${encodeURIComponent(place)}`);
+			if (type) queries.push(`type=${encodeURIComponent(type)}`);
+			if (place) queries.push(`postal_code=${encodeURIComponent(place)}`);
 			const queryString = queries.length ? `?${queries.join("&")}` : "";
 			const url = `${api}${queryString}`;
 
@@ -216,12 +216,10 @@ Vue.createApp({
 				const jsonResponse = await response.json();
 				this.result = jsonResponse;
 
-				if (!response.ok) {
-					//throw new Error(JSON.stringify(jsonResponse));
+				if (response.ok) {
+					this.resetForm();
+					this.entries = await this.loadEntries();
 				}
-
-				this.resetForm();
-				this.entries = await this.loadEntries();
 			} catch (error) {
 				this.result = error;
 			}

@@ -83,7 +83,7 @@ class Database {
 			return ['data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
 		} catch (PDOException $e) {
 			http_response_code(400);
-			echo json_encode(['error' => 'Ungültige Anfrage']);
+			echo json_encode(['error' => 'Ungültige Suchanfrage']);
 			exit();
 		}
 	}
@@ -263,7 +263,7 @@ class Backend {
 		$errors = [];
 
 		if ($this->db->entryExists('place_id', $data['place_id'])) {
-			$errors[] = 'place_id: Name already exists';
+			$errors[] = 'Das Lokal existiert bereits.';
 		}
 
 		foreach ($rules as $field => $rule) {
@@ -272,7 +272,10 @@ class Backend {
 				$errors[] = $field . ': ' . $error;
 			}
 		}
-		return implode("\n", $errors);
+
+		if (isset($errors) && !empty($errors)) {
+			return 'Fehlerhafte Anfrage: ' . implode("\n", $errors);
+		}
 	}
 }
 
