@@ -105,10 +105,10 @@ class Database {
 class Backend {
 	protected $db;
 	protected $rules = [
-		'name' => ['required' => true, 'minlength' => 2],
+		'name' => ['required' => true, 'minlength' => 1],
 		'postal_code' => [
 			'required' => true,
-			'minlength' => 3, 'maxlength' => 6, 'numeric' => true
+			'minlength' => 4, 'maxlength' => 4, 'numeric' => true
 		],
 		'locality' => ['required' => true, 'minlength' => 2],
 		'website' => [

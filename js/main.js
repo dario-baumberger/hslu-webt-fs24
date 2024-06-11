@@ -47,8 +47,8 @@ Vue.createApp({
 				name: createField("", true, 1),
 				postal_code: createField("", true, 4, 4),
 				locality: createField("", true, 2),
-				website: createField("", false, undefined, undefined, /^https?:\/\/.+$/),
-				url: createField("", false, undefined, undefined, /^https?:\/\/.+$/),
+				website: createField("", false, 10, undefined, /^https?:\/\/.+$/),
+				url: createField("", false, 10, undefined, /^https?:\/\/.+$/),
 				place_id: createField(),
 				type: createField("", true),
 			},
@@ -62,13 +62,7 @@ Vue.createApp({
 	},
 	async created() {
 		this.submitSearch();
-		let response = await this.loadEntries("api/locations");
-		console.log(response);
-		this.localities = response.data
-			.filter((entry, index, self) => index === self.findIndex((e) => e.locality === entry.locality && e.postal_code === entry.postal_code))
-			.sort((a, b) => a.postal_code - b.postal_code)
-			.map((entry) => ({ locality: entry.locality, postal_code: entry.postal_code }));
-		console.log(this.localities);
+		this.updateLocalities();
 		this.readSearchCookieUpdateSearchInputs();
 	},
 
@@ -94,27 +88,27 @@ Vue.createApp({
 		const ctx = canvas.getContext("2d");
 
 		class Circle {
-			constructor(x, y, dx, dy, r, lineWidth) {
+			constructor(x, y, deltaX, deltaY, radius, lineWidth) {
 				this.x = x;
 				this.y = y;
-				this.dx = dx;
-				this.dy = dy;
-				this.r = r;
+				this.deltaX = deltaX;
+				this.deltaY = deltaY;
+				this.radius = radius;
 				this.lineWidth = lineWidth;
 			}
 			draw = () => {
 				ctx.beginPath();
-				ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2, false);
+				ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
 				ctx.strokeStyle = "rgba(255,255,255,0.2)";
 				ctx.lineWidth = this.lineWidth;
 				ctx.stroke();
 			};
 
 			update = () => {
-				this.dx = this.x + this.r > width || this.x - this.r < 0 ? -this.dx : this.dx;
-				this.dy = this.y + this.r > height || this.y - this.r < 0 ? -this.dy : this.dy;
-				this.x += this.dx;
-				this.y += this.dy;
+				this.deltaX = this.x + this.radius > width || this.x - this.radius < 0 ? -this.deltaX : this.deltaX;
+				this.deltaY = this.y + this.radius > height || this.y - this.radius < 0 ? -this.deltaY : this.deltaY;
+				this.x += this.deltaX;
+				this.y += this.deltaY;
 				this.draw();
 			};
 		}
@@ -138,6 +132,9 @@ Vue.createApp({
 		animate();
 	},
 	methods: {
+		/*
+		 * Read search cookie and update search inputs
+		 */
 		readSearchCookieUpdateSearchInputs() {
 			const searchCookie = document.cookie.split("; ").find((row) => row.startsWith("search="));
 			const searchCookieValue = searchCookie ? JSON.parse(decodeURIComponent(searchCookie.split("=")[1])) : {};
@@ -150,13 +147,26 @@ Vue.createApp({
 			field.error = error;
 			return !error;
 		},
-		async submitEntries(data, url) {
+		/*
+		 * Update localities with sorted, unique values from all entries
+		 */
+		async updateLocalities() {
+			let response = await this.loadEntries("api/locations");
+			this.localities = response.data
+				.filter((entry, index, self) => index === self.findIndex((e) => e.locality === entry.locality && e.postal_code === entry.postal_code))
+				.sort((a, b) => a.postal_code - b.postal_code)
+				.map((entry) => ({ locality: entry.locality, postal_code: entry.postal_code }));
+		},
+		/* 	async submitEntries(data, url) {
 			const response = await fetch(url, {
 				...fetchOptions("POST"),
 				body: JSON.stringify(data),
 			});
 			return response;
-		},
+		}, */
+		/*
+		 * Load entries from API with search parameters and error handling
+		 */
 		async loadEntries(api = "/api/locations", type = "", place = "") {
 			let queries = [];
 			if (type) queries.push(`type=${encodeURIComponent(type)}`);
@@ -168,7 +178,7 @@ Vue.createApp({
 				const response = await fetch(url, fetchOptions("GET"));
 				if (!response.ok) {
 					const errorResponse = await response.json();
-					this.result = errorResponse; // Set the result to the error response
+					this.result = errorResponse;
 					throw new Error(errorResponse);
 				}
 
@@ -177,17 +187,24 @@ Vue.createApp({
 				return { data: [] };
 			}
 		},
-
+		/*
+		 * Submit search values, load entries and scroll to results
+		 */
 		async submitSearch() {
 			this.entries = await this.loadEntries("/api/search", this.search.type, this.search.postal_code);
 			window.scrollTo({ top: document.getElementById("locations").offsetTop, behavior: "smooth" });
 		},
+		/*
+		 * Reset search values and reload entries
+		 */
 		async resetSearch() {
 			this.search.postal_code = "";
 			this.search.type = "";
-			document.cookie = "search=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 			this.entries = await this.loadEntries("/api/search", this.search.type, this.search.postal_code);
 		},
+		/*
+		 * Submit new location, reload entries and update localities
+		 */
 		async submitNew() {
 			Object.keys(this.form).forEach((key) => this.validate(key));
 			try {
@@ -196,18 +213,26 @@ Vue.createApp({
 					return obj;
 				}, {});
 
-				const response = await this.submitEntries(formValues, "/api/locations");
+				const response = await fetch("/api/locations", {
+					...fetchOptions("POST"),
+					body: JSON.stringify(formValues),
+				});
+
 				const jsonResponse = await response.json();
 				this.result = jsonResponse;
 
 				if (response.ok) {
 					this.resetForm();
 					this.entries = await this.loadEntries();
+					this.updateLocalities();
 				}
 			} catch (error) {
 				this.result = error;
 			}
 		},
+		/*
+		 * Reset form values
+		 */
 		resetForm() {
 			document.getElementById("autocomplete").value = "";
 			Object.keys(this.form).forEach((key) => {

@@ -152,37 +152,37 @@
 					<div class="form-row">
 						<div class="form-field">
 							<label for="name">Name</label>
-							<input type="text" name="name" id="name" class="w3-input w3-border w3-round" v-bind="form.name" v-model="form.name.value" @input="validate($event.target.id)" @blur="validate($event.target.id)" />
-							<span class="w3-text-red">{{form.name.error}}</span>
+							<input type="text" name="name" id="name" class="w3-input w3-border w3-round" v-bind="form.name" v-model="form.name.value" @input="validate($event.target.id)" @blur="validate($event.target.id)" :aria-describedby=" form.name.error ? 'form_name_error' : null" />
+							<span id="form_name_error" v-if="form.name.error" class="w3-text-red">{{form.name.error}}</span>
 						</div>
 					</div>
 					<div class="form-row">
 						<div class="form-field">
 							<label for="postal_code">PLZ</label>
-							<input type="text" name="postal_code" id="postal_code" class="w3-input w3-border w3-round" v-bind="form.postal_code" v-model="form.postal_code.value" @input="validate($event.target.id)" @blur="validate($event.target.id)" />
-							<span class="w3-text-red">{{form.postal_code.error}}</span>
+							<input type="text" name="postal_code" id="postal_code" class="w3-input w3-border w3-round" v-bind="form.postal_code" v-model="form.postal_code.value" @input="validate($event.target.id)" @blur="validate($event.target.id)" :aria-describedby="form.postal_code.error ? 'form_postal_code_error' : null" />
+							<span id="form_postal_code_error" v-if="form.postal_code.error" class="w3-text-red">{{form.postal_code.error}}</span>
 						</div>
 						<div class="form-field">
 							<label for="locality">Ort</label>
-							<input type="text" name="locality" id="locality" class="w3-input w3-border w3-round" v-bind="form.locality" v-model="form.locality.value" @input="validate($event.target.id)" @blur="validate($event.target.id)" />
-							<span class="w3-text-red">{{form.locality.error}}</span>
+							<input type="text" name="locality" id="locality" class="w3-input w3-border w3-round" v-bind="form.locality" v-model="form.locality.value" @input="validate($event.target.id)" @blur="validate($event.target.id)" :aria-describedby="form.locality.error ? 'form_locality_error' : null" />
+							<span id="form_locality_error" v-if="form.locality.error" class="w3-text-red">{{form.locality.error}}</span>
 						</div>
 					</div>
 					<div class="form-row">
 						<div class="form-field">
 							<label for="website">Webseite</label>
-							<input type="url" name="website" id="website" class="w3-input w3-border w3-round" v-bind="form.website" v-model="form.website.value" @input="validate($event.target.id)" @blur="validate($event.target.id)" />
-							<span class="w3-text-red">{{form.website.error}}</span>
+							<input type="url" name="website" id="website" class="w3-input w3-border w3-round" v-bind="form.website" v-model="form.website.value" @input="validate($event.target.id)" @blur="validate($event.target.id)" :aria-describedby="form.website.error ? 'form_website_error' : null" />
+							<span id="form_website_error" v-if="form.website.error" class="w3-text-red">{{form.website.error}}</span>
 						</div>
 					</div>
 					<div class="form-row">
 						<div class="form-field">
 							<label for="type">Typ</label>
-							<select name="type" id="type" class="w3-select w3-border" v-bind="form.type" v-model="form.type.value" @change="validate($event.target.id)" @blur="validate($event.target.id)">
+							<select name="type" id="type" class="w3-select w3-border" v-bind="form.type" v-model="form.type.value" @change="validate($event.target.id)" @blur="validate($event.target.id)" :aria-describedby="form.type.error ? 'form_type_error' : null">
 								<option value="">Bitte wählen</option>
 								<option v-for="option in typeOptions" :value="option.value">{{option.label}}</option>
 							</select>
-							<span class="w3-text-red">{{form.type.error}}</span>
+							<span id="form_type_error" v-if="form.type.error" class="w3-text-red">{{form.type.error}}</span>
 						</div>
 					</div>
 					<div class="form-row">
