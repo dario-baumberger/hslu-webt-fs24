@@ -139,18 +139,28 @@ class Backend {
 		$id = $_GET['id'] ?? null;
 		$isSearchRequest = strpos($_SERVER['REQUEST_URI'], 'api/search') !== false;
 		switch ($method) {
+
 			case 'GET':
 				if ($id) {
 					$this->handleGetSingleRequest($id);
+				} elseif ($isSearchRequest) {
+					if (!empty($params)) {
+						setcookie('search', json_encode($params), time() + (3600 * 60 * 30), "/");
+						$this->handleSearchRequest($params);
+					} else {
+						if (isset($_COOKIE['search'])) {
+							unset($_COOKIE['search']);
+							setcookie('search', '', time() - 3600, '/');
+						}
+						$this->handleGetAllRequest();
+					}
 				} elseif (!empty($params)) {
 					$this->handleSearchRequest($params);
-				} elseif ($isSearchRequest && isset($_COOKIE['search']) && !empty($_COOKIE['search'])) {
-					$searchParams = json_decode($_COOKIE['search'], true);
-					$this->handleSearchRequest($searchParams);
 				} else {
 					$this->handleGetAllRequest();
 				}
 				break;
+
 			case 'POST':
 				$this->handlePostRequest();
 				break;
@@ -212,11 +222,6 @@ class Backend {
 	 * @param array $params
 	 */
 	private function handleSearchRequest($params) {
-		$cookie = [];
-		foreach ($params as $key => $value) {
-			$cookie["$key"] = $value;
-		}
-		setcookie('search', json_encode($cookie), time() + (3600 * 60 * 30), "/");
 		$documents = $this->db->searchEntries($params);
 		if (empty($documents)) {
 			echo json_encode([]);

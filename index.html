@@ -9,34 +9,34 @@
 		<link rel="stylesheet" type="text/css" href="./css/styles.css" />
 	</head>
 	<body>
-		<header class="header">
-			<label class="navigation-toggle" for="navigation-input">
+		<header class="header w3-black">
+			<label class="navigation-toggle w3-hover-grey w3-text-white w3-hide-medium w3-hide-large" for="navigation-input">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" /></svg>
 				<span class="sr-only">Menü Umschalten</span>
 			</label>
-			<input id="navigation-input" type="checkbox" class="navigation-input" />
+			<input id="navigation-input" type="checkbox" class="navigation-input w3-hide-medium w3-hide-large" />
 			<nav class="navigation">
 				<ul class="navigation-list">
 					<li class="navigation-item">
-						<a class="navigation-link" href="/#search">Suche</a>
+						<a class="navigation-link w3-text-white w3-hover-text-black w3-hover-grey" href="/#search">Suche</a>
 					</li>
 					<li class="navigation-item">
-						<a class="navigation-link" href="/#information">Informationen</a>
+						<a class="navigation-link w3-text-white w3-hover-text-black w3-hover-grey" href="/#information">Informationen</a>
 					</li>
 					<li class="navigation-item">
-						<a class="navigation-link" href="/#locations">Locations</a>
+						<a class="navigation-link w3-text-white w3-hover-text-black w3-hover-grey" href="/#locations">Locations</a>
 					</li>
 					<li class="navigation-item">
-						<a class="navigation-link" href="/#new">Hinzufügen</a>
+						<a class="navigation-link w3-text-white w3-hover-text-black w3-hover-grey" href="/#new">Hinzufügen</a>
 					</li>
 				</ul>
 			</nav>
 		</header>
 		<main id="app">
 			<section class="w3-display-container h-screen" id="search">
-				<img class="cover" src="../img/unsplash-restaurant.jpg" alt="London" width="1500" height="700" loading="lazy" />
+				<img class="cover w3-image" src="../img/unsplash-restaurant.jpg" alt="London" width="1500" height="700" loading="lazy" />
 				<canvas class="canvas" id="canvas"></canvas>
-				<div class="w3-container w3-col s10 m8 l6 w3-display-bottommiddle w3-white w3-padding-24">
+				<div class="w3-container w3-col s10 m8 l6 w3-display-middle w3-white w3-padding-24">
 					<h2 class="w3-center">Lokal finden</h2>
 					<form class="form search">
 						<div class="form-row">
@@ -44,7 +44,6 @@
 								<label for="search_place">Ort</label>
 								<select name="search_place" id="search_place" class="w3-select w3-border" v-model="search.postal_code">
 									<option value="">Alle</option>
-									<option value="12">12</option>
 									<option v-for="option in localities" :value="option.postal_code">{{option.postal_code}} {{option.locality}}</option>
 								</select>
 							</div>
@@ -57,8 +56,8 @@
 							</div>
 						</div>
 						<div class="form-row">
-							<button type="submit" @click.prevent="submitSearch" class="w3-button w3-black">Suchen</button>
-							<button type="reset" @click.prevent="resetSearch" class="w3-button w3-dark-grey">Zurücksetzen</button>
+							<button type="submit" @click.prevent="submitSearch()" class="w3-button w3-black">Suchen</button>
+							<button type="reset" @click.prevent="resetSearch()" class="w3-button w3-dark-grey">Zurücksetzen</button>
 						</div>
 					</form>
 				</div>
@@ -76,7 +75,7 @@
 						<p>Ihre letzten Suchanfragen werden gespeichert und erneut angezeigt, bis Sie eine neue Suche starten oder die Suche zurücksetzen.</p>
 					</div>
 					<div class="w3-col l6 m12">
-						<img src="../img/instructions-search.png" alt="Instructions" usemap="#workmap" loading="lazy" />
+						<img src="../img/instructions-search.png" alt="Instructions" class="w3-image" loading="lazy" />
 					</div>
 				</div>
 				<hr />
@@ -92,7 +91,7 @@
 						</ol>
 					</div>
 					<div class="w3-col l6 m12">
-						<img src="../img/instructions-add.png" alt="Instructions" usemap="#workmap" loading="lazy" />
+						<img src="../img/instructions-add.png" alt="Instructions" class="w3-image" loading="lazy" />
 					</div>
 				</div>
 			</section>
@@ -105,7 +104,7 @@
 						<a href="#search" class="w3-button w3-black">Neue Suche</a>
 					</div>
 					<table v-if="entries.data.length" class="w3-table w3-striped w3-bordered">
-						<thead>
+						<thead class="w3-hide-small">
 							<tr>
 								<th>Name</th>
 								<th>PLZ Ort</th>
@@ -193,12 +192,9 @@
 					<input type="hidden" name="place_id" id="place_id" />
 				</form>
 			</section>
-
-			<div v-if="result.data" class="w3-card w3-green w3-padding">
-				<p v-html="result.data"></p>
-			</div>
-			<div v-if="result.error" class="w3-card w3-red w3-padding">
-				<p v-html="result.error"></p>
+			<div v-if="result" class="w3-card w3-padding" :class="{ 'w3-green': result.data, 'w3-red': result.error }">
+				<p v-if="result.data" v-html="result.data"></p>
+				<p v-if="result.error" v-html="result.error"></p>
 			</div>
 		</main>
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBseo5xOkpp0jLe2zmXHuWd7TTnHYIH97k&libraries=places&language=de" loading="async"></script>

@@ -63,7 +63,12 @@ Vue.createApp({
 	async created() {
 		this.submitSearch();
 		let response = await this.loadEntries("api/locations");
-		this.localities = response.data.map((entry) => ({ locality: entry.locality, postal_code: entry.postal_code }));
+		console.log(response);
+		this.localities = response.data
+			.filter((entry, index, self) => index === self.findIndex((e) => e.locality === entry.locality && e.postal_code === entry.postal_code))
+			.sort((a, b) => a.postal_code - b.postal_code)
+			.map((entry) => ({ locality: entry.locality, postal_code: entry.postal_code }));
+		console.log(this.localities);
 		this.readSearchCookieUpdateSearchInputs();
 	},
 
@@ -128,27 +133,6 @@ Vue.createApp({
 			ctx.fill();
 			ctx.filter = "blur(2px)";
 			circles.forEach((circle) => circle.update());
-
-			const text = "Lokalität suchen";
-			const centerX = canvas.width / 2;
-			const centerY = canvas.height / 2;
-			const radius = 360;
-			const startAngle = -Math.PI / 4; // Start at -45 degrees
-			const endAngle = Math.PI / 4;
-
-			ctx.font = "bold 30px Arial";
-			ctx.textBaseline = "middle";
-			ctx.fillStyle = "white"; // Set fill color to white
-
-			for (let i = 0; i < text.length; i++) {
-				const char = text[i];
-				const angle = (endAngle - startAngle) * (i / (text.length - 1)) + startAngle;
-				ctx.save();
-				ctx.translate(centerX, centerY);
-				ctx.rotate(angle);
-				ctx.fillText(char, 0, -radius);
-				ctx.restore();
-			}
 		}
 
 		animate();
@@ -188,7 +172,7 @@ Vue.createApp({
 					throw new Error(errorResponse);
 				}
 
-				return data;
+				return response.json();
 			} catch (error) {
 				return { data: [] };
 			}
