@@ -8,7 +8,9 @@ const fetchOptions = (method) => ({
 	},
 	method,
 });
-const types = ["Glutenfrei", "Vegan", "Vegan und Glutenfrei"];
+
+// types of locations for selects
+const typeOptions = ["Glutenfrei", "Vegan", "Vegan und Glutenfrei"];
 
 // create input field object with needed properties
 function createField(value = "", required = false, minLength = undefined, maxLength = undefined, pattern = undefined) {
@@ -56,12 +58,12 @@ Vue.createApp({
 				postal_code: "",
 				type: "",
 			},
-			result: {},
-			typeOptions: types.map((type) => ({ value: type, label: type })),
+			result: undefined,
+			typeOptions: typeOptions.map((type) => ({ value: type, label: type })),
 		};
 	},
 	async created() {
-		this.submitSearch();
+		this.submitSearch(false);
 		this.updateLocalities();
 		this.readSearchCookieUpdateSearchInputs();
 	},
@@ -81,8 +83,8 @@ Vue.createApp({
 			});
 		});
 		const canvas = document.getElementById("canvas");
-		const width = window.innerWidth;
-		const height = window.innerHeight;
+		let width = window.innerWidth;
+		let height = window.innerHeight;
 		canvas.width = width;
 		canvas.height = height;
 		const ctx = canvas.getContext("2d");
@@ -118,6 +120,13 @@ Vue.createApp({
 			const radius = Math.floor(Math.random() * 120) + 50;
 			circles.push(new Circle(radius + Math.random() * width, radius + Math.random() * height, Math.floor(Math.random() * 2) + 1, Math.floor(Math.random() * 2) + 1, radius, Math.floor(Math.random() * 5) + 3));
 		}
+
+		window.addEventListener("resize", () => {
+			width = window.innerWidth;
+			height = window.innerHeight;
+			canvas.width = width;
+			canvas.height = height;
+		});
 
 		function animate() {
 			requestAnimationFrame(animate);
@@ -183,9 +192,9 @@ Vue.createApp({
 		/*
 		 * Submit search values, load entries and scroll to results
 		 */
-		async submitSearch() {
+		async submitSearch(scroll = true) {
 			this.entries = await this.loadEntries("/api/search", this.search.type, this.search.postal_code);
-			window.scrollTo({ top: document.getElementById("locations").offsetTop, behavior: "smooth" });
+			scroll ? window.scrollTo({ top: document.getElementById("locations").offsetTop, behavior: "smooth" }) : null;
 		},
 		/*
 		 * Reset search values and reload entries
@@ -196,11 +205,16 @@ Vue.createApp({
 			this.entries = await this.loadEntries("/api/search", this.search.type, this.search.postal_code);
 		},
 		/*
-		 * Submit new location, reload entries and update localities
+		 * Submit new location, and update localities
 		 */
 		async submitNew() {
-			Object.keys(this.form).forEach((key) => this.validate(key));
+			// validate all form fields
+			const isFormValid = Object.keys(this.form).every((key) => this.validate(key));
+
+			if (!isFormValid) return;
+
 			try {
+				// prepare form values, use only values from form object
 				const formValues = Object.keys(this.form).reduce((obj, key) => {
 					obj[key] = this.form[key].value || "";
 					return obj;
@@ -211,12 +225,10 @@ Vue.createApp({
 					body: JSON.stringify(formValues),
 				});
 
-				const jsonResponse = await response.json();
-				this.result = jsonResponse;
+				this.result = await response.json();
 
 				if (response.ok) {
 					this.resetForm();
-					this.entries = await this.loadEntries();
 					this.updateLocalities();
 				}
 			} catch (error) {
