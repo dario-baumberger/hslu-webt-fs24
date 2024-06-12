@@ -75,7 +75,7 @@
 						<p>Ihre letzten Suchanfragen werden gespeichert und erneut angezeigt, bis Sie eine neue Suche starten oder die Suche zurücksetzen.</p>
 					</div>
 					<div class="w3-col l6 m12">
-						<img src="../img/instructions-search.png" alt="Instructions" class="w3-image" loading="lazy" />
+						<img src="../img/instructions-search.gif" alt="Instructions" class="w3-image instructions-image" loading="lazy" />
 					</div>
 				</div>
 				<hr />
@@ -91,7 +91,7 @@
 						</ol>
 					</div>
 					<div class="w3-col l6 m12">
-						<img src="../img/instructions-add.png" alt="Instructions" class="w3-image" loading="lazy" />
+						<img src="../img/instructions-add.gif" alt="Instructions" class="w3-image instructions-image" loading="lazy" />
 					</div>
 				</div>
 			</section>
@@ -192,13 +192,13 @@
 					<input type="hidden" name="place_id" id="place_id" />
 				</form>
 			</section>
-			<div v-if="result" class="w3-card w3-padding" :class="{ 'w3-green': result.data, 'w3-red': result.error }">
+			<div v-if="result" class="result w3-card w3-padding" :class="{ 'w3-green': result.data, 'w3-red': result.error }" @click="result=undefined">
 				<p v-if="result.data" v-html="result.data"></p>
 				<p v-if="result.error" v-html="result.error"></p>
 			</div>
 		</main>
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBseo5xOkpp0jLe2zmXHuWd7TTnHYIH97k&libraries=places&language=de" loading="async"></script>
-		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.global.js"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBseo5xOkpp0jLe2zmXHuWd7TTnHYIH97k&libraries=places&language=de"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.global.prod.js"></script>
 		<script src="./js/main.js" type="module"></script>
 	</body>
 </html>
