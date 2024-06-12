@@ -39,7 +39,7 @@ class Database {
 	 * Get all entries from the database
 	 */
 	public function getAllEntries() {
-		$sql = "SELECT * FROM test";
+		$sql = "SELECT place_id, name, url, website, locality, postal_code, type FROM locations";
 		$stmt = self::$conn->prepare($sql);
 		$stmt->execute();
 		return ['data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
@@ -49,7 +49,7 @@ class Database {
 	 * Get a single entry from the database
 	 */
 	public function getEntry($id) {
-		$sql = "SELECT * FROM test WHERE place_id = :id";
+		$sql = "SELECT place_id, name, url, website, locality, postal_code, type FROM locations WHERE place_id = :id";
 		$stmt = $this->executeQuery($sql, ['id' => $id]);
 		return ['data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
 	}
@@ -60,7 +60,7 @@ class Database {
 	 * @return string
 	 */
 	public function writeEntry($data) {
-		$sql = 'INSERT INTO test (place_id, name, website, url, postal_code, locality, type) VALUES (COALESCE(:place_id, UUID()), :name, :website, :url, :postal_code, :locality, :type)';
+		$sql = 'INSERT INTO locations (place_id, name, website, url, postal_code, locality, type) VALUES (COALESCE(:place_id, UUID()), :name, :website, :url, :postal_code, :locality, :type)';
 		$this->executeQuery($sql, $data);
 		echo json_encode(['data' => "Eintrag erfolgreich hinzugefügt."]);
 	}
@@ -72,7 +72,7 @@ class Database {
 	 */
 	public function searchEntries($params) {
 		try {
-			$sql = "SELECT * FROM test WHERE ";
+			$sql = "SELECT place_id, name, url, website, locality, postal_code, type FROM locations WHERE ";
 			$values = [];
 			foreach ($params as $key => $value) {
 				$sql .= "$key = :$key AND ";
@@ -95,7 +95,7 @@ class Database {
 	 * @return bool
 	 */
 	public function entryExists($field, $value) {
-		$sql = "SELECT * FROM test WHERE $field = :value";
+		$sql = "SELECT * FROM locations WHERE $field = :value";
 		$stmt = $this->executeQuery($sql, ['value' => $value]);
 		$result = $stmt->fetch(PDO::FETCH_ASSOC);
 		return $result ? true : false;
