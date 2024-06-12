@@ -87,7 +87,7 @@
 						<ol>
 							<li>Suchen Sie nach Ihrem Lokal mittels Such-Feld.</li>
 							<li>Wählen Sie ihr Lokal aus den Vorschlägen aus. Die zu erfassenden Daten werden automatisch übernommen.</li>
-							<li>Ergab Ihre Suche keinen Treffer, erfassen Sie die Angaben des Lokals manuell</li>
+							<li>Ergab Ihre Suche keinen Treffer, erfassen Sie die Angaben des Lokals manuell.</li>
 							<li>Speichern Sie die eingetragenen Angaben.</li>
 						</ol>
 					</div>
@@ -104,22 +104,22 @@
 						<p>Zu Ihrer Suche wurden keine Lokale gefunden.</p>
 						<a href="#search" class="w3-button w3-black">Neue Suche</a>
 					</div>
-					<table v-if="entries.data.length" class="w3-table w3-striped w3-bordered">
+					<table role="table" v-if="entries.data.length" class="w3-table w3-striped w3-bordered">
 						<thead class="w3-hide-small">
 							<tr>
-								<th>Name</th>
-								<th>PLZ Ort</th>
-								<th>Typ</th>
-								<th class="td--small"><span class="sr-only">Webseite</span></th>
-								<th class="td--small"><span class="sr-only">Google Profil</span></th>
+								<th scope="col">Name</th>
+								<th scope="col">PLZ Ort</th>
+								<th scope="col">Typ</th>
+								<th scope="col" class="td--small"><span class="sr-only">Webseite</span></th>
+								<th scope="col" class="td--small"><span class="sr-only">Google Profil</span></th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody role="rowgroup">
 							<tr v-for="item in entries.data">
-								<th data-title="Name">{{ item.name }}</th>
-								<td data-title="PLZ Ort">{{ item.postal_code }} {{ item.locality }}</td>
-								<td data-title="Typ">{{item.type}}</td>
-								<td data-title="Webseite" class="td--small">
+								<th role="rowheader" scope="row" data-title="Name">{{ item.name }}</th>
+								<td role="cell" data-title="PLZ Ort">{{ item.postal_code }} {{ item.locality }}</td>
+								<td role="cell" data-title="Typ">{{item.type}}</td>
+								<td role="cell" data-title="Webseite" class="td--small">
 									<a v-if="item.website" :href="item.website" target="_blank" class="w3-button w3-black">
 										<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 640 512">
 											<path d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z" />
@@ -127,7 +127,7 @@
 										<span class="sr-only"> {{ item.name }} Webseite </span>
 									</a>
 								</td>
-								<td data-title="Google Profil" class="td--small">
+								<td role="cell" data-title="Google Profil" class="td--small">
 									<a v-if="item.url" :href="item.url" target="_blank" class="w3-button w3-black">
 										<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 488 512">
 											<path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
@@ -153,33 +153,33 @@
 					<div class="form-row">
 						<div class="form-field">
 							<label for="name">Name</label>
-							<input type="text" name="name" id="name" class="w3-input w3-border w3-round" v-bind="form.name" v-model="form.name.value" @input="validate($event.target.id)" @blur="validate($event.target.id)" :aria-describedby=" form.name.error ? 'form_name_error' : null" />
+							<input type="text" name="name" id="name" class="w3-input w3-border w3-round" :class="{'w3-border-red': form.name.error }" v-bind="form.name" v-model="form.name.value" @input="validate($event.target.id)" @blur="validate($event.target.id)" :aria-describedby=" form.name.error ? 'form_name_error' : null" />
 							<span id="form_name_error" v-if="form.name.error" class="w3-text-red">{{form.name.error}}</span>
 						</div>
 					</div>
 					<div class="form-row">
 						<div class="form-field">
 							<label for="postal_code">PLZ</label>
-							<input type="text" name="postal_code" id="postal_code" class="w3-input w3-border w3-round" v-bind="form.postal_code" v-model="form.postal_code.value" @input="validate($event.target.id)" @blur="validate($event.target.id)" :aria-describedby="form.postal_code.error ? 'form_postal_code_error' : null" />
+							<input type="text" name="postal_code" id="postal_code" class="w3-input w3-border w3-round" :class="{'w3-border-red': form.postal_code.error }" v-bind="form.postal_code" v-model="form.postal_code.value" @input="validate($event.target.id)" @blur="validate($event.target.id)" :aria-describedby="form.postal_code.error ? 'form_postal_code_error' : null" />
 							<span id="form_postal_code_error" v-if="form.postal_code.error" class="w3-text-red">{{form.postal_code.error}}</span>
 						</div>
 						<div class="form-field">
 							<label for="locality">Ort</label>
-							<input type="text" name="locality" id="locality" class="w3-input w3-border w3-round" v-bind="form.locality" v-model="form.locality.value" @input="validate($event.target.id)" @blur="validate($event.target.id)" :aria-describedby="form.locality.error ? 'form_locality_error' : null" />
+							<input type="text" name="locality" id="locality" class="w3-input w3-border w3-round" :class="{'w3-border-red': form.locality.error }" v-bind="form.locality" v-model="form.locality.value" @input="validate($event.target.id)" @blur="validate($event.target.id)" :aria-describedby="form.locality.error ? 'form_locality_error' : null" />
 							<span id="form_locality_error" v-if="form.locality.error" class="w3-text-red">{{form.locality.error}}</span>
 						</div>
 					</div>
 					<div class="form-row">
 						<div class="form-field">
-							<label for="website">Webseite</label>
-							<input type="url" name="website" id="website" class="w3-input w3-border w3-round" v-bind="form.website" v-model="form.website.value" @input="validate($event.target.id)" @blur="validate($event.target.id)" :aria-describedby="form.website.error ? 'form_website_error' : null" />
+							<label for="website">Webseite (Optional)</label>
+							<input type="url" name="website" id="website" class="w3-input w3-border w3-round" :class="{'w3-border-red': form.website.error }" v-bind="form.website" v-model="form.website.value" @input="validate($event.target.id)" @blur="validate($event.target.id)" :aria-describedby="form.website.error ? 'form_website_error' : null" />
 							<span id="form_website_error" v-if="form.website.error" class="w3-text-red">{{form.website.error}}</span>
 						</div>
 					</div>
 					<div class="form-row">
 						<div class="form-field">
 							<label for="type">Typ</label>
-							<select name="type" id="type" class="w3-select w3-border" v-bind="form.type" v-model="form.type.value" @change="validate($event.target.id)" @blur="validate($event.target.id)" :aria-describedby="form.type.error ? 'form_type_error' : null">
+							<select name="type" id="type" class="w3-select w3-border" :class="{'w3-border-red': form.type.error }" v-bind="form.type" v-model="form.type.value" @change="validate($event.target.id)" @blur="validate($event.target.id)" :aria-describedby="form.type.error ? 'form_type_error' : null">
 								<option value="">Bitte wählen</option>
 								<option v-for="option in typeOptions" :value="option.value">{{option.label}}</option>
 							</select>

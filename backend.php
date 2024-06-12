@@ -246,7 +246,6 @@ class Backend {
 		if (isset($rules['maxlength']) && isset($field) && strlen($field) > $rules['maxlength']) {
 			return  $field . ': must be no more than ' . $rules['maxlength'] . ' characters long.';
 		}
-
 		if (isset($rules['url']) && isset($rules['required']) && $rules['required'] === true && isset($field) && !filter_var($field, FILTER_VALIDATE_URL)) {
 			return $field . ': is not a valid URL.';
 		}

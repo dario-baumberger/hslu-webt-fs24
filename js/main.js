@@ -24,7 +24,7 @@ function validateField(field) {
 		// minlength should only be checked if field has a value. Otherwise it would always be invalid.
 		//There exists field with minlength which are not required.
 		{
-			condition: !field.required && field.value && field.value.length < field.minLength,
+			condition: field.value && field.value.length < field.minLength,
 			message: `Eingabe zur kurz. Minimale Länge ${field.minLength} Zeichen`,
 		},
 		{
@@ -47,7 +47,7 @@ Vue.createApp({
 			localities: [],
 			form: {
 				name: createField("", true, 1),
-				postal_code: createField("", true, 4, 4),
+				postal_code: createField("", true, 4, 4, /^\d{4}$/),
 				locality: createField("", true, 2),
 				website: createField("", false, 10, undefined, /^https?:\/\/.+$/),
 				url: createField("", false, 10, undefined, /^https?:\/\/.+$/),
@@ -209,9 +209,9 @@ Vue.createApp({
 		 */
 		async submitNew() {
 			// validate all form fields
-			const isFormValid = Object.keys(this.form).every((key) => this.validate(key));
+			const invalidFields = Object.keys(this.form).filter((key) => !this.validate(key));
 
-			if (!isFormValid) return;
+			if (invalidFields.length > 0) return;
 
 			try {
 				// prepare form values, use only values from form object
