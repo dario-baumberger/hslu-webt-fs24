@@ -157,13 +157,6 @@ Vue.createApp({
 				.sort((a, b) => a.postal_code - b.postal_code)
 				.map((entry) => ({ locality: entry.locality, postal_code: entry.postal_code }));
 		},
-		/* 	async submitEntries(data, url) {
-			const response = await fetch(url, {
-				...fetchOptions("POST"),
-				body: JSON.stringify(data),
-			});
-			return response;
-		}, */
 		/*
 		 * Load entries from API with search parameters and error handling
 		 */
