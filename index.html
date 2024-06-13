@@ -100,11 +100,11 @@
 			<section id="locations" class="w3-container w3-padding-64">
 				<div class="w3-col l10 center margin-auto">
 					<h2 class="w3-center">Locations</h2>
-					<div v-if="!entries.data.length" class="w3-container w3-panel w3-light-grey w3-padding-64 w3-center">
+					<div v-if="!entries?.data?.length" class="w3-container w3-panel w3-light-grey w3-padding-64 w3-center">
 						<p>Zu Ihrer Suche wurden keine Lokale gefunden.</p>
 						<a href="#search" class="w3-button w3-black">Neue Suche</a>
 					</div>
-					<table role="table" v-if="entries.data.length" class="w3-table w3-striped w3-bordered">
+					<table role="table" v-if="entries?.data?.length" class="w3-table w3-striped w3-bordered">
 						<thead class="w3-hide-small">
 							<tr>
 								<th scope="col">Name</th>
@@ -199,7 +199,7 @@
 			</div>
 		</main>
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBseo5xOkpp0jLe2zmXHuWd7TTnHYIH97k&libraries=places&language=de"></script>
-		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.global.prod.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.global.js"></script>
 		<script src="./js/main.js" type="module"></script>
 	</body>
 </html>

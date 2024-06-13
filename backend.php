@@ -126,8 +126,13 @@ class Backend {
 	 * Create a new Backend instance with connection to the database
 	 */
 	public function __construct() {
-		$this->db = new Database("db", "3306", "webt", "root", "root");
-		$this->handleRequest();
+		try {
+			$this->db = new Database("185.101.158.52", "3306", "webt", "66Im_ju02", "d3@Q8x9i700Er!yi24");
+			$this->handleRequest();
+		} catch (Exception $e) {
+			echo json_encode(['error' => 'Fehler beim Aufbau der Datenbankverbindung.']);
+			http_response_code(503);
+		}
 	}
 
 	/**

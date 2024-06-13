@@ -161,8 +161,8 @@ Vue.createApp({
 		 */
 		async updateLocalities() {
 			let response = await this.loadEntries("api/locations");
-			this.localities = response.data
-				.filter((entry, index, self) => index === self.findIndex((e) => e.locality === entry.locality && e.postal_code === entry.postal_code))
+			this.localities = response?.data
+				?.filter((entry, index, self) => index === self.findIndex((e) => e.locality === entry.locality && e.postal_code === entry.postal_code))
 				.sort((a, b) => a.postal_code - b.postal_code)
 				.map((entry) => ({ locality: entry.locality, postal_code: entry.postal_code }));
 		},
