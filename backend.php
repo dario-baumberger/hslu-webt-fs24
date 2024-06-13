@@ -16,9 +16,9 @@ class Database {
 	/**
 	 * Create a new connection to the database
 	 */
-	private function connect($host, $port, $dbname, $user, $password) {
+	private function connect($host, $port, $dbname, $user, $password, $charset = "utf8") {
 		if (self::$conn == null) {
-			self::$conn = new PDO("mysql:host=$host;port=$port;dbname=$dbname", $user, $password);
+			self::$conn = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=$charset", $user, $password);
 			self::$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		}
 	}
@@ -127,7 +127,8 @@ class Backend {
 	 */
 	public function __construct() {
 		try {
-			$this->db = new Database("185.101.158.52", "3306", "webt", "66Im_ju02", "d3@Q8x9i700Er!yi24");
+			//$this->db = new Database("db", "3306", "webt", "root", "root");
+			$this->db = new Database("hslu-webt-fs24.doob.ch", "3306", "webt", "66Im_ju02", "d3@Q8x9i700Er!yi24");
 			$this->handleRequest();
 		} catch (Exception $e) {
 			echo json_encode(['error' => 'Fehler beim Aufbau der Datenbankverbindung.']);
