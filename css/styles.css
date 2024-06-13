@@ -88,6 +88,11 @@ form {
 	bottom: 0;
 }
 
+input,
+select {
+	font-size: 16px;
+}
+
 @media only screen and (max-width: 600px) {
 	.form-row {
 		flex-direction: column;
