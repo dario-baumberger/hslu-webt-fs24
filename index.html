@@ -64,7 +64,7 @@
 			</section>
 			<section id="information" class="w3-container w3-col l8 margin-auto w3-padding-64">
 				<h2 class="w3-center">Informationen</h2>
-				<div class="w3-row w3-margin-top w3-margin-bottom">
+				<div class="w3-row w3-margin-top w3-margin-bottom w3-border-bottom">
 					<div class="w3-col l6 m12">
 						<h3>Anzeigen / Suchen</h3>
 						<p>Fiden Sie glutenfreie und vegane Lokale in Ihrer Nähe</p>
@@ -78,15 +78,13 @@
 						<img src="img/instructions-search.gif" alt="Bewegt Bild welches die aufgezählten Schritte, für die Suche und das Aufrufen der Seite, visuell darstellt." class="w3-image instructions-image" loading="lazy" />
 					</div>
 				</div>
-				<hr />
-				<div class="w3-row w3-margin-top w3-margin-bottom">
+				<div class="w3-row w3-margin-top w3-margin-bottom w3-border-bottom">
 					<div class="w3-col l6 m12">
 						<h3>Hinzufügen</h3>
 						<p>Fügen Sie Restaurants, Takeaways etc. dem Glutenfreien- und Veganen-Verzeichnis hinzu.</p>
 						<ol>
 							<li>Suchen Sie nach Ihrem Lokal mittels Such-Feld.</li>
-							<li>Wählen Sie ihr Lokal aus den Vorschlägen aus. Die zu erfassenden Daten werden automatisch übernommen.</li>
-							<li>Ergab Ihre Suche keinen Treffer, erfassen Sie die Angaben des Lokals manuell.</li>
+							<li>Wählen Sie ihr Lokal aus den Vorschlägen aus. Die zu erfassenden Daten werden automatisch übernommen. Ergab Ihre Suche keinen Treffer, erfassen Sie die Angaben des Lokals manuell.</li>
 							<li>Speichern Sie die eingetragenen Angaben.</li>
 						</ol>
 					</div>
@@ -95,8 +93,7 @@
 					</div>
 				</div>
 			</section>
-			<hr />
-			<section id="locations" class="w3-container w3-padding-64" tabindex="-1">
+			<section id="locations" class="w3-container w3-padding-64 w3-border-bottom" tabindex="-1">
 				<div class="w3-col l10 center margin-auto">
 					<h2 class="w3-center">Locations</h2>
 					<div v-if="!entries?.data?.length" class="w3-container w3-panel w3-light-grey w3-padding-64 w3-center">
@@ -140,7 +137,6 @@
 					</table>
 				</div>
 			</section>
-			<hr />
 			<section id="new" class="w3-container w3-col l8 margin-auto w3-padding-64">
 				<h2 class="w3-center">Neues Lokal hinzufügen</h2>
 				<form id="form" class="form">
