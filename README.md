@@ -179,3 +179,7 @@ GET /api/search?locality=Zürich&postal_code=8044
 	}
 ]
 ```
+
+## AI disclaimer
+
+Parts of the documentation were generated with AI. Some code fragments were optimized by AI.
