@@ -9,6 +9,8 @@
 3. If necessary, modify the database connection settings in `backend.php` on line 131.
 4. Open the site in your web browser.
 
+This [repository](https://github.com/dario-baumberger/hslu-webt-fs24/) includes all the necessary configuration files to run the project using DDEV.
+
 ## API Documentation
 
 This API provides two main routes: `/api/locations` and `/api/search`. Both routes offer methods to retrieve and manage location entries.
