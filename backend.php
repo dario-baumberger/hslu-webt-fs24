@@ -78,6 +78,7 @@ class Database {
 				$sql .= "$key = :$key AND ";
 				$values[":$key"] = $value;
 			}
+			// remove last AND
 			$sql = rtrim($sql, " AND ");
 			$stmt = $this->executeQuery($sql, $values);
 			return ['data' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
@@ -209,7 +210,6 @@ class Backend {
 			$body = file_get_contents("php://input");
 			$json = json_decode($body, true);
 			$error = self::validateData($json, $this->rules);
-
 			if (isset($error) && !empty($error)) {
 				http_response_code(400);
 				echo json_encode(['error' => $error]);
@@ -246,6 +246,8 @@ class Backend {
 		if ($rules['required'] && empty($field)) {
 			return $field . ': is required.';
 		}
+		// minlength should only be checked if field has a value. Otherwise it would always be invalid.
+		// There exists field with minlength which are not required.
 		if (isset($rules['minlength']) && !empty($field) && strlen($field) < $rules['minlength']) {
 			return $field . ': must be at least ' . $rules['minlength'] . ' characters long.';
 		}
@@ -255,7 +257,6 @@ class Backend {
 		if (isset($rules['url']) && isset($rules['required']) && $rules['required'] === true && isset($field) && !filter_var($field, FILTER_VALIDATE_URL)) {
 			return $field . ': is not a valid URL.';
 		}
-
 		if (isset($rules['numeric']) && isset($field) && !is_numeric($field)) {
 			return $field . ': is not a valid number.';
 		}

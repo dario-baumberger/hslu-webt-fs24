@@ -22,7 +22,7 @@ function validateField(field) {
 	const rules = [
 		{ condition: field.required && field.value === "", message: "Pflichtfeld" },
 		// minlength should only be checked if field has a value. Otherwise it would always be invalid.
-		//There exists field with minlength which are not required.
+		// There exists field with minlength which are not required.
 		{
 			condition: field.value && field.value.length < field.minLength,
 			message: `Eingabe zur kurz. Minimale Länge ${field.minLength} Zeichen`,
@@ -194,6 +194,7 @@ Vue.createApp({
 		 */
 		async submitSearch(scroll = true) {
 			this.entries = await this.loadEntries("/api/search", this.search.type, this.search.postal_code);
+			scroll ? document.querySelector("#locations").focus({ preventScroll: true }) : null;
 			scroll ? window.scrollTo({ top: document.getElementById("locations").offsetTop, behavior: "smooth" }) : null;
 		},
 		/*
