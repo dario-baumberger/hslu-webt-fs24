@@ -1,6 +1,15 @@
-# API Documentation
+# Glutenfrei und Vegan Lokalfinder
 
-## Introduction
+## Setup
+
+1. Copy the `.htaccess`, `backend.php`, `index.html`, `css`, `js`, and `img` files/directories into your PHP environment.
+2. Import the database schema into a MySQL database:
+   - Use `schema.sql` if you want to include example entries.
+   - Use `schema-empty.sql` if you prefer not to include example entries.
+3. If necessary, modify the database connection settings in `backend.php` on line 131.
+4. Open the site in your web browser.
+
+## API Documentation
 
 This API provides two main routes: `/api/locations` and `/api/search`. Both routes offer methods to retrieve and manage location entries.
 
