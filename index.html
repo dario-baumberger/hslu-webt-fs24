@@ -34,8 +34,7 @@
 		</header>
 		<main id="app">
 			<h1 class="sr-only">Glutenfreie und Vegane Lokale finden</h1>
-			<section class="w3-display-container h-screen" id="search">
-				<img class="cover w3-image" src="../img/unsplash-restaurant.jpg" alt="London" width="1500" height="700" loading="lazy" />
+			<section class="w3-display-container h-screen cover" id="search">
 				<canvas class="canvas" id="canvas"></canvas>
 				<div class="w3-container w3-col s10 m8 l6 w3-display-middle w3-white w3-padding-24">
 					<h2 class="w3-center">Lokal finden</h2>
@@ -76,7 +75,7 @@
 						<p>Ihre letzten Suchanfragen werden gespeichert und erneut angezeigt, bis Sie eine neue Suche starten oder die Suche zurücksetzen.</p>
 					</div>
 					<div class="w3-col l6 m12">
-						<img src="../img/instructions-search.gif" alt="Bewegt Bild welches die aufgezählten Schritte, für die Suche und das Aufrufen der Seite, visuell darstellt." class="w3-image instructions-image" loading="lazy" />
+						<img src="img/instructions-search.gif" alt="Bewegt Bild welches die aufgezählten Schritte, für die Suche und das Aufrufen der Seite, visuell darstellt." class="w3-image instructions-image" loading="lazy" />
 					</div>
 				</div>
 				<hr />
@@ -92,7 +91,7 @@
 						</ol>
 					</div>
 					<div class="w3-col l6 m12">
-						<img src="../img/instructions-add.gif" alt="Bewegt Bild welches die aufgezählten Schritte, für das Hinzufügen eines Lokals, visuell darstellt." class="w3-image instructions-image" loading="lazy" />
+						<img src="img/instructions-add.gif" alt="Bewegt Bild welches die aufgezählten Schritte, für das Hinzufügen eines Lokals, visuell darstellt." class="w3-image instructions-image" loading="lazy" />
 					</div>
 				</div>
 			</section>
@@ -114,6 +113,7 @@
 								<th scope="col" class="td--small"><span class="sr-only">Google Profil</span></th>
 							</tr>
 						</thead>
+						<!-- the roles are redudant to the elements. on mobile the table is flex, therefore the roles are added to keep semantic -->
 						<tbody role="rowgroup">
 							<tr v-for="item in entries.data">
 								<th role="rowheader" scope="row" data-title="Name">{{ item.name }}</th>
@@ -199,7 +199,7 @@
 			</div>
 		</main>
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBseo5xOkpp0jLe2zmXHuWd7TTnHYIH97k&libraries=places&language=de"></script>
-		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.global.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.global.prod.js"></script>
 		<script src="./js/main.js" type="module"></script>
 	</body>
 </html>

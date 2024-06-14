@@ -169,7 +169,7 @@ Vue.createApp({
 		/*
 		 * Load entries from API with search parameters and error handling
 		 */
-		async loadEntries(api = "/api/locations", type = "", place = "") {
+		async loadEntries(api = "api/locations", type = "", place = "") {
 			let queries = [];
 			if (type) queries.push(`type=${encodeURIComponent(type)}`);
 			if (place) queries.push(`postal_code=${encodeURIComponent(place)}`);
@@ -193,7 +193,7 @@ Vue.createApp({
 		 * Submit search values, load entries and scroll to results
 		 */
 		async submitSearch(scroll = true) {
-			this.entries = await this.loadEntries("/api/search", this.search.type, this.search.postal_code);
+			this.entries = await this.loadEntries("api/search", this.search.type, this.search.postal_code);
 			scroll ? document.querySelector("#locations").focus({ preventScroll: true }) : null;
 			scroll ? window.scrollTo({ top: document.getElementById("locations").offsetTop, behavior: "smooth" }) : null;
 		},
@@ -203,7 +203,7 @@ Vue.createApp({
 		async resetSearch() {
 			this.search.postal_code = "";
 			this.search.type = "";
-			this.entries = await this.loadEntries("/api/search", this.search.type, this.search.postal_code);
+			this.entries = await this.loadEntries("api/search", this.search.type, this.search.postal_code);
 		},
 		/*
 		 * Submit new location, and update localities
@@ -221,7 +221,7 @@ Vue.createApp({
 					return obj;
 				}, {});
 
-				const response = await fetch("/api/locations", {
+				const response = await fetch("api/locations", {
 					...fetchOptions("POST"),
 					body: JSON.stringify(formValues),
 				});

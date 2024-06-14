@@ -30,12 +30,9 @@
 }
 
 .cover {
-	height: 100%;
 	width: 100%;
-	object-fit: cover;
-	position: absolute;
-	left: 0;
-	top: 0;
+	background-image: url("../img/unsplash-restaurant.jpg");
+	background-size: cover;
 }
 
 .canvas {
